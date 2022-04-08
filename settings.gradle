@@ -13,4 +13,6 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "SSAG_Admin"
-include ':app'
+include ':presentation'
+include ':domain'
+include ':mylibrary'
