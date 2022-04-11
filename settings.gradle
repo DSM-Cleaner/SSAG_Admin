@@ -15,4 +15,5 @@ dependencyResolutionManagement {
 rootProject.name = "SSAG_Admin"
 include ':presentation'
 include ':domain'
-include ':mylibrary'
+include ':data'
+include ':data'
