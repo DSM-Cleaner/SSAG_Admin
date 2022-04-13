@@ -1,7 +1,6 @@
 plugins {
     id("com.android.application")
     id("dagger.hilt.android.plugin")
-    id("com.google.gms.google-services")
     kotlin("android")
     kotlin("kapt")
 }
@@ -14,18 +13,17 @@ android {
         applicationId = "com.ssag.ssag_admin"
         minSdk = Project.minSdk
         targetSdk = Project.targetSdk
-        versionCode 1
-        versionName "1.0"
+        versionCode = 1
+        versionName = "1.0"
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
-            useSupportLibrary true
+            useSupportLibrary = true
         }
     }
 
     buildTypes {
         release {
-            minifyEnabled false
+            isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -43,12 +41,7 @@ android {
         jvmTarget = "1.8"
     }
     buildFeatures {
-        compose true
-    }
-    packagingOptions {
-        resources {
-            excludes += '/META-INF/{AL2.0,LGPL2.1}'
-        }
+        compose = true
     }
 }
 
@@ -64,6 +57,10 @@ dependencies {
     implementation(Dependency.UI.composePreview)
     implementation(Dependency.UI.activityCompose)
     debugImplementation(Dependency.UI.composeTooling)
+
+    implementation(Dependency.DI.hiltAndroid)
+    implementation(Dependency.DI.hiltCompose)
+    kapt(Dependency.DI.hiltCompiler)
 
     implementation(Dependency.Lifecycle.runTime)
 }

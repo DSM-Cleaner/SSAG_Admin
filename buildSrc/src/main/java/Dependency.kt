@@ -12,7 +12,7 @@ object Dependency {
 
     object UI {
         const val compose = "androidx.compose.ui:ui:${Version.jetpackCompose}"
-        const val composeMaterial = "androidx.compose.material:material:$${Version.jetpackCompose}"
+        const val composeMaterial = "androidx.compose.material:material:${Version.jetpackCompose}"
         const val composePreview =
             "androidx.compose.ui:ui-tooling-preview:${Version.jetpackCompose}"
         const val activityCompose =
@@ -32,5 +32,12 @@ object Dependency {
         const val mockitoKotlin =
             "com.nhaarman.mockitokotlin2:mockito-kotlin:${Version.mockitoKotlin}"
         const val mockitoInline = "org.mockito:mockito-inline:${Version.mockitoInline}"
+    }
+
+    object DI {
+        const val hiltAndroid = "com.google.dagger:hilt-android:${Version.hilt}"
+        const val hiltCompiler = "com.google.dagger:hilt-android-compiler:${Version.hilt}"
+        const val inject = "javax.inject:javax.inject:1"
+        const val hiltCompose = "androidx.hilt:hilt-navigation-compose:${Version.hiltCompose}"
     }
 }
