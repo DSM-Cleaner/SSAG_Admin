@@ -36,4 +36,6 @@ android {
 dependencies {
 
     testImplementation(Dependency.Test.junit)
+
+    implementation(Dependency.DI.inject)
 }

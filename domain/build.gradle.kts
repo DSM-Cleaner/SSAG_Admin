@@ -33,4 +33,5 @@ android {
 
 dependencies {
 
+    implementation(Dependency.DI.inject)
 }
