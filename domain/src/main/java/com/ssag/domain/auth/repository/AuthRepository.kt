@@ -5,4 +5,6 @@ import com.ssag.domain.auth.entity.TeacherEntity
 interface AuthRepository {
 
     fun login(password: String): TeacherEntity
+
+    fun changePassword(newPassword: String)
 }
