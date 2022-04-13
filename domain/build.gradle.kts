@@ -33,5 +33,12 @@ android {
 
 dependencies {
 
+    testImplementation(Dependency.Test.junit)
+    testImplementation(Dependency.Test.mockito)
+    testImplementation(Dependency.Test.mockitoKotlin)
+    testImplementation(Dependency.Test.mockitoInline)
+
+    implementation(Dependency.Coroutine.core)
+
     implementation(Dependency.DI.inject)
 }

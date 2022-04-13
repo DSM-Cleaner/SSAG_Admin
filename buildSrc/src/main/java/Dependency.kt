@@ -40,4 +40,9 @@ object Dependency {
         const val inject = "javax.inject:javax.inject:1"
         const val hiltCompose = "androidx.hilt:hilt-navigation-compose:${Version.hiltCompose}"
     }
+
+    object Coroutine {
+        const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Version.coroutine}"
+        const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Version.coroutine}"
+    }
 }
