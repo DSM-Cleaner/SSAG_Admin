@@ -7,9 +7,10 @@ plugins {
 }
 
 android {
-    compileSdk 31
+    compileSdk = Project.compileSdk
 
     defaultConfig {
+
         applicationId "com.ssag.ssag_admin"
         minSdk 26
         targetSdk 31
