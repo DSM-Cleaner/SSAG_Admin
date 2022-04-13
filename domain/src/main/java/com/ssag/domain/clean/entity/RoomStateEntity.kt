@@ -8,7 +8,7 @@ data class RoomStateEntity(
     val studentB: StudentEntity,
     val studentC: StudentEntity
 ) {
-    
+
     data class StudentEntity(
         val gcn: Int,
         val name: String,
