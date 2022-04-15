@@ -18,7 +18,7 @@ abstract class BaseViewModel<S : State, I : Intent> : ViewModel() {
         reducer.setState(state)
     }
 
-    abstract fun reduceIntent(oldState: S, event: I)
+    abstract fun reduceIntent(oldState: S, intent: I)
 
     inner class BaseViewModelReducer : Reducer<S, I>(initialState) {
 
