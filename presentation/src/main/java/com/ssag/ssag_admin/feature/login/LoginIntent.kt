@@ -5,5 +5,6 @@ import com.ssag.ssag_admin.base.Intent
 
 sealed class LoginIntent : Intent {
     data class SetTeacher(val teacherEntity: TeacherEntity) : LoginIntent()
+    data class InputPassword(val password: String) : LoginIntent()
     object Logout : LoginIntent()
 }

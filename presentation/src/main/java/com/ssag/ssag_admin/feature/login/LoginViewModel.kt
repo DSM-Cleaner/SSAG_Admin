@@ -1,6 +1,5 @@
 package com.ssag.ssag_admin.feature.login
 
-import androidx.lifecycle.ViewModel
 import com.ssag.domain.auth.usecase.LoginUseCase
 import com.ssag.ssag_admin.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,6 +13,14 @@ class LoginViewModel @Inject constructor(
     override val initialState: LoginState
         get() = LoginState.initial()
 
+    suspend fun login() {
+        loginUseCase.execute(state.value.password)
+    }
+
+    fun inputPassword(password: String) {
+        sendIntent(LoginIntent.InputPassword(password))
+    }
+
     override fun reduceIntent(oldState: LoginState, intent: LoginIntent) {
         when (intent) {
             is LoginIntent.SetTeacher -> {
@@ -22,6 +29,14 @@ class LoginViewModel @Inject constructor(
                         hasLogin = true,
                         teacherName = intent.teacherEntity.name,
                         startFloor = if (intent.teacherEntity.isManTeacher) 5 else 2
+                    )
+                )
+            }
+
+            is LoginIntent.InputPassword -> {
+                setState(
+                    oldState.copy(
+                        password = intent.password
                     )
                 )
             }
