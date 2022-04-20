@@ -5,6 +5,7 @@ import com.ssag.ssag_admin.base.State
 data class LoginState(
     val hasLogin: Boolean,
     val teacherName: String,
+    val isLoading: Boolean,
     val startFloor: Int,
     val password: String
 ) : State {
@@ -14,6 +15,7 @@ data class LoginState(
             LoginState(
                 hasLogin = false,
                 teacherName = "",
+                isLoading = false,
                 startFloor = 0,
                 password = ""
             )

@@ -4,11 +4,10 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -22,20 +21,38 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.ssag.ssag_admin.R
 import com.ssag.ssag_admin.ui.theme.Blue700
+import kotlinx.coroutines.launch
 
 @Composable
 fun Login(navController: NavController, loginViewModel: LoginViewModel = hiltViewModel()) {
     val loginState = loginViewModel.state.collectAsState().value
-    LoginContent(loginState = loginState)
+    val coroutineScope = rememberCoroutineScope()
+    LoginContent(
+        loginState = loginState,
+        doOnPasswordInput = { password -> loginViewModel.inputPassword(password) },
+        doOnLoginButtonClick = {
+            coroutineScope.launch {
+                loginViewModel.login()
+            }
+        }
+    )
 }
 
 @Composable
-fun LoginContent(loginState: LoginState) {
+fun LoginContent(
+    loginState: LoginState,
+    doOnPasswordInput: (String) -> Unit,
+    doOnLoginButtonClick: () -> Unit
+) {
     val scaffoldState = rememberScaffoldState()
     Scaffold(scaffoldState = scaffoldState, backgroundColor = Blue700) {
         Column(modifier = Modifier.fillMaxSize()) {
             LoginTitle()
-            LoginLayout(loginState = loginState)
+            LoginLayout(
+                loginState = loginState,
+                doOnPasswordInput = doOnPasswordInput,
+                doOnLoginButtonClick = doOnLoginButtonClick
+            )
         }
     }
 }
@@ -60,11 +77,19 @@ fun LoginTitle() {
 }
 
 @Composable
-fun LoginLayout(loginState: LoginState) {
+fun LoginLayout(
+    loginState: LoginState,
+    doOnPasswordInput: (String) -> Unit,
+    doOnLoginButtonClick: () -> Unit
+) {
     if (loginState.hasLogin) {
         StartCleanLayout(loginState = loginState)
     } else {
-        NeedLoginLayout(loginState = loginState)
+        NeedLoginLayout(
+            loginState = loginState,
+            doOnPasswordInput = doOnPasswordInput,
+            doOnLoginButtonClick = doOnLoginButtonClick
+        )
     }
 }
 
@@ -76,15 +101,32 @@ fun StartCleanLayout(loginState: LoginState) {
 }
 
 @Composable
-fun NeedLoginLayout(loginState: LoginState) {
+fun NeedLoginLayout(
+    loginState: LoginState,
+    doOnPasswordInput: (String) -> Unit,
+    doOnLoginButtonClick: () -> Unit
+) {
     LoginColumn {
+        val askInputPasswordComment = "비밀번호를 입력홰 주세요"
+        Text(text = askInputPasswordComment)
+        OutlinedTextField(value = loginState.password, onValueChange = doOnPasswordInput)
+        Spacer(modifier = Modifier.height(100.dp))
+        LoginButton(loginState = loginState, doOnLoginButtonClick = doOnLoginButtonClick)
+    }
+}
 
+@Composable
+fun LoginButton(loginState: LoginState, doOnLoginButtonClick: () -> Unit) {
+    val text = if (loginState.isLoading) "로딩중" else "로그인"
+    Button(onClick = doOnLoginButtonClick) {
+        Text(text = text)
     }
 }
 
 @Composable
 fun LoginColumn(contents: @Composable () -> Unit) {
     Column(
+        verticalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier
             .fillMaxSize()
             .clip(RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp))
@@ -92,12 +134,15 @@ fun LoginColumn(contents: @Composable () -> Unit) {
                 Color.White
             )
     ) {
-
+        contents()
     }
 }
 
 @Preview
 @Composable
 fun LoginContentPreview() {
-    LoginContent(loginState = LoginState.initial())
+    LoginContent(
+        loginState = LoginState.initial(),
+        doOnPasswordInput = {},
+        doOnLoginButtonClick = {})
 }
