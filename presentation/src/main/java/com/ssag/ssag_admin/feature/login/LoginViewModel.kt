@@ -18,9 +18,9 @@ class LoginViewModel @Inject constructor(
         kotlin.runCatching {
             loginUseCase.execute(state.value.password)
         }.onSuccess {
-
+            sendEvent(LoginEvent.SuccessLogin)
         }.onFailure {
-
+            sendEvent(LoginEvent.FailedLogin)
         }
     }
 
@@ -61,6 +61,7 @@ class LoginViewModel @Inject constructor(
     }
 
     sealed class LoginEvent : Event {
-
+        object SuccessLogin : LoginEvent()
+        object FailedLogin : LoginEvent()
     }
 }

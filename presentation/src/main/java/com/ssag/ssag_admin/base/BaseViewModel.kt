@@ -1,7 +1,9 @@
 package com.ssag.ssag_admin.base
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
 abstract class BaseViewModel<S : State, I : Intent, E: Event> : ViewModel() {
 
@@ -15,6 +17,12 @@ abstract class BaseViewModel<S : State, I : Intent, E: Event> : ViewModel() {
 
     fun sendIntent(intent: I) {
         reducer.sendIntent(intent)
+    }
+
+    fun sendEvent(event: E) {
+        viewModelScope.launch {
+            _event.emit(event)
+        }
     }
 
     fun setState(state: S) {
