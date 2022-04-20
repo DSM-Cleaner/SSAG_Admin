@@ -35,6 +35,8 @@ android {
 
 dependencies {
 
+    implementation(project(":domain"))
+
     testImplementation(Dependency.Test.junit)
 
     implementation(Dependency.Network.retrofit)
