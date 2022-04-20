@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.ButtonDefaults.buttonColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
@@ -21,6 +22,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.ssag.ssag_admin.R
 import com.ssag.ssag_admin.ui.theme.Blue700
+import com.ssag.ssag_admin.ui.theme.Purple700
 import kotlinx.coroutines.launch
 
 @Composable
@@ -108,8 +110,10 @@ fun NeedLoginLayout(
 ) {
     LoginColumn {
         val askInputPasswordComment = "비밀번호를 입력홰 주세요"
-        Text(text = askInputPasswordComment)
-        OutlinedTextField(value = loginState.password, onValueChange = doOnPasswordInput)
+        Column {
+            Text(text = askInputPasswordComment)
+            OutlinedTextField(value = loginState.password, onValueChange = doOnPasswordInput)
+        }
         Spacer(modifier = Modifier.height(100.dp))
         LoginButton(loginState = loginState, doOnLoginButtonClick = doOnLoginButtonClick)
     }
@@ -118,7 +122,16 @@ fun NeedLoginLayout(
 @Composable
 fun LoginButton(loginState: LoginState, doOnLoginButtonClick: () -> Unit) {
     val text = if (loginState.isLoading) "로딩중" else "로그인"
-    Button(onClick = doOnLoginButtonClick) {
+    val color = if (loginState.isLoading) Color.Gray else Purple700
+    Button(
+        onClick = doOnLoginButtonClick, colors = buttonColors(
+            backgroundColor = color,
+            contentColor = Color.White
+        ),
+        modifier = Modifier
+            .size(100.dp, 40.dp)
+            .clip(RoundedCornerShape(15.dp))
+    ) {
         Text(text = text)
     }
 }
@@ -127,6 +140,7 @@ fun LoginButton(loginState: LoginState, doOnLoginButtonClick: () -> Unit) {
 fun LoginColumn(contents: @Composable () -> Unit) {
     Column(
         verticalArrangement = Arrangement.SpaceEvenly,
+        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize()
             .clip(RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp))
