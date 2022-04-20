@@ -3,12 +3,15 @@ package com.ssag.ssag_admin.base
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.StateFlow
 
-abstract class BaseViewModel<S : State, I : Intent> : ViewModel() {
+abstract class BaseViewModel<S : State, I : Intent, E: Event> : ViewModel() {
 
     private val reducer = BaseViewModelReducer()
 
     abstract val initialState: S
     val state: StateFlow<S> = reducer.state
+
+    private val _event = MutableEventFlow<Event>()
+    val event = _event.asEventFlow()
 
     fun sendIntent(intent: I) {
         reducer.sendIntent(intent)

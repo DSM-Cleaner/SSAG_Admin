@@ -2,19 +2,26 @@ package com.ssag.ssag_admin.feature.login
 
 import com.ssag.domain.auth.usecase.LoginUseCase
 import com.ssag.ssag_admin.base.BaseViewModel
+import com.ssag.ssag_admin.base.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase
-) : BaseViewModel<LoginState, LoginIntent>() {
+) : BaseViewModel<LoginState, LoginIntent, LoginViewModel.LoginEvent>() {
 
     override val initialState: LoginState
         get() = LoginState.initial()
 
     suspend fun login() {
-        loginUseCase.execute(state.value.password)
+        kotlin.runCatching {
+            loginUseCase.execute(state.value.password)
+        }.onSuccess {
+
+        }.onFailure {
+
+        }
     }
 
     fun inputPassword(password: String) {
@@ -51,5 +58,9 @@ class LoginViewModel @Inject constructor(
                 )
             }
         }
+    }
+
+    sealed class LoginEvent : Event {
+
     }
 }
