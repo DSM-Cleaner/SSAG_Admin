@@ -16,11 +16,14 @@ class LoginViewModel @Inject constructor(
 
     suspend fun login() {
         kotlin.runCatching {
+            sendIntent(LoginIntent.StartLoading)
             loginUseCase.execute(state.value.password)
         }.onSuccess {
-            sendEvent(LoginEvent.SuccessLogin)
+            sendIntent(LoginIntent.SuccessLogin(it))
         }.onFailure {
             sendEvent(LoginEvent.FailedLogin)
+        }.also {
+            sendIntent(LoginIntent.FinishLoading)
         }
     }
 
@@ -30,7 +33,7 @@ class LoginViewModel @Inject constructor(
 
     override fun reduceIntent(oldState: LoginState, intent: LoginIntent) {
         when (intent) {
-            is LoginIntent.SetTeacher -> {
+            is LoginIntent.SuccessLogin -> {
                 setState(
                     oldState.copy(
                         hasLogin = true,
@@ -57,11 +60,26 @@ class LoginViewModel @Inject constructor(
                     )
                 )
             }
+
+            is LoginIntent.StartLoading -> {
+                setState(
+                    oldState.copy(
+                        isLoading = true
+                    )
+                )
+            }
+
+            is LoginIntent.FinishLoading -> {
+                setState(
+                    oldState.copy(
+                        isLoading = false
+                    )
+                )
+            }
         }
     }
 
     sealed class LoginEvent : Event {
-        object SuccessLogin : LoginEvent()
         object FailedLogin : LoginEvent()
     }
 }

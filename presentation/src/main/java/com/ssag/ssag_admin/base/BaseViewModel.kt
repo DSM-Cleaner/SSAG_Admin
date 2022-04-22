@@ -12,7 +12,7 @@ abstract class BaseViewModel<S : State, I : Intent, E: Event> : ViewModel() {
     abstract val initialState: S
     val state: StateFlow<S> = reducer.state
 
-    private val _event = MutableEventFlow<Event>()
+    private val _event = MutableEventFlow<E>()
     val event = _event.asEventFlow()
 
     fun sendIntent(intent: I) {
