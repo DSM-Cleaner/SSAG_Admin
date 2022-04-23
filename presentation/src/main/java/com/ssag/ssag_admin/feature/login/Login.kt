@@ -2,6 +2,7 @@ package com.ssag.ssag_admin.feature.login
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -54,6 +55,12 @@ fun Login(navController: NavController, loginViewModel: LoginViewModel = hiltVie
             },
             doOnStartCheckClick = {
                 navController.navigate(AppNavigationItem.CheckClean.route)
+            },
+            doOnChangePasswordClick = {
+                navController.navigate(AppNavigationItem.ChangePassword.route)
+            },
+            doOnLogoutClick = {
+
             }
         )
 
@@ -72,7 +79,9 @@ fun LoginContent(
     loginState: LoginState,
     doOnPasswordInput: (String) -> Unit,
     doOnLoginButtonClick: () -> Unit,
-    doOnStartCheckClick: () -> Unit
+    doOnStartCheckClick: () -> Unit,
+    doOnChangePasswordClick: () -> Unit,
+    doOnLogoutClick: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -84,7 +93,9 @@ fun LoginContent(
             loginState = loginState,
             doOnPasswordInput = doOnPasswordInput,
             doOnLoginButtonClick = doOnLoginButtonClick,
-            doOnStartCheckClick = doOnStartCheckClick
+            doOnStartCheckClick = doOnStartCheckClick,
+            doOnChangePasswordClick = doOnChangePasswordClick,
+            doOnLogoutClick = doOnLogoutClick
         )
     }
 }
@@ -113,10 +124,17 @@ fun LoginLayout(
     loginState: LoginState,
     doOnPasswordInput: (String) -> Unit,
     doOnLoginButtonClick: () -> Unit,
-    doOnStartCheckClick: () -> Unit
+    doOnStartCheckClick: () -> Unit,
+    doOnChangePasswordClick: () -> Unit,
+    doOnLogoutClick: () -> Unit
 ) {
     if (loginState.hasLogin) {
-        StartCleanLayout(loginState = loginState, doOnStartCheckClick = doOnStartCheckClick)
+        StartCleanLayout(
+            loginState = loginState,
+            doOnStartCheckClick = doOnStartCheckClick,
+            doOnChangePasswordClick = doOnChangePasswordClick,
+            doOnLogoutClick = doOnLogoutClick
+        )
     } else {
         NeedLoginLayout(
             loginState = loginState,
@@ -127,12 +145,18 @@ fun LoginLayout(
 }
 
 @Composable
-fun StartCleanLayout(loginState: LoginState, doOnStartCheckClick: () -> Unit) {
+fun StartCleanLayout(
+    loginState: LoginState,
+    doOnStartCheckClick: () -> Unit,
+    doOnChangePasswordClick: () -> Unit,
+    doOnLogoutClick: () -> Unit
+) {
     val loginStateComment = "현재 로그인 되어있는 선생님"
     val floorText = floorText(loginState.startFloor)
     val buttonText = "청소검사 시작하기"
     LoginColumn {
-        Column {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Spacer(modifier = Modifier.height(20.dp))
             Text(
                 text = floorText,
                 fontSize = 17.sp,
@@ -150,9 +174,13 @@ fun StartCleanLayout(loginState: LoginState, doOnStartCheckClick: () -> Unit) {
                     .fillMaxWidth()
             )
             TeacherCardView(teacherName = loginState.teacherName)
+            Spacer(modifier = Modifier.height(30.dp))
+            ChangePasswordButton(doOnChangePasswordClick = doOnChangePasswordClick)
+            Spacer(modifier = Modifier.height(10.dp))
+            LogoutButton(doOnLogoutClick = doOnLogoutClick)
         }
 
-        Spacer(modifier = Modifier.height(200.dp))
+        Spacer(modifier = Modifier.height(130.dp))
 
         LoginButton(
             buttonText = buttonText,
@@ -161,6 +189,24 @@ fun StartCleanLayout(loginState: LoginState, doOnStartCheckClick: () -> Unit) {
         )
         Spacer(modifier = Modifier.height(30.dp))
     }
+}
+
+@Composable
+fun ChangePasswordButton(doOnChangePasswordClick: () -> Unit) {
+    val changePasswordText = "비밀번호 변경하기"
+    Text(text = changePasswordText, modifier = Modifier
+        .clickable { doOnChangePasswordClick() }
+        .padding(12.dp)
+    )
+}
+
+@Composable
+fun LogoutButton(doOnLogoutClick: () -> Unit) {
+    val logoutText = "로그아웃"
+    Text(text = logoutText, color = Color.Red, modifier = Modifier
+        .clickable { doOnLogoutClick() }
+        .padding(12.dp)
+    )
 }
 
 @Composable
@@ -292,7 +338,9 @@ fun LoginContentPreview() {
         ),
         doOnPasswordInput = {},
         doOnLoginButtonClick = {},
-        doOnStartCheckClick = {}
+        doOnStartCheckClick = {},
+        doOnChangePasswordClick = {},
+        doOnLogoutClick = {}
     )
 }
 
@@ -307,6 +355,8 @@ fun StartCleanLayoutPreview() {
             false,
             5,
             ""
-        )
+        ),
+        doOnChangePasswordClick = {},
+        doOnLogoutClick = {}
     )
 }
