@@ -29,6 +29,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.ssag.ssag_admin.R
 import com.ssag.ssag_admin.base.observeWithLifecycle
+import com.ssag.ssag_admin.ui.navigation.AppNavigationItem
 import com.ssag.ssag_admin.ui.theme.Blue700
 import com.ssag.ssag_admin.ui.theme.Purple700
 import kotlinx.coroutines.InternalCoroutinesApi
@@ -50,6 +51,9 @@ fun Login(navController: NavController, loginViewModel: LoginViewModel = hiltVie
                 coroutineScope.launch {
                     loginViewModel.login()
                 }
+            },
+            doOnStartCheckClick = {
+                navController.navigate(AppNavigationItem.CheckClean.route)
             }
         )
 
@@ -67,7 +71,8 @@ fun Login(navController: NavController, loginViewModel: LoginViewModel = hiltVie
 fun LoginContent(
     loginState: LoginState,
     doOnPasswordInput: (String) -> Unit,
-    doOnLoginButtonClick: () -> Unit
+    doOnLoginButtonClick: () -> Unit,
+    doOnStartCheckClick: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -78,7 +83,8 @@ fun LoginContent(
         LoginLayout(
             loginState = loginState,
             doOnPasswordInput = doOnPasswordInput,
-            doOnLoginButtonClick = doOnLoginButtonClick
+            doOnLoginButtonClick = doOnLoginButtonClick,
+            doOnStartCheckClick = doOnStartCheckClick
         )
     }
 }
@@ -106,10 +112,11 @@ fun LoginTitle() {
 fun LoginLayout(
     loginState: LoginState,
     doOnPasswordInput: (String) -> Unit,
-    doOnLoginButtonClick: () -> Unit
+    doOnLoginButtonClick: () -> Unit,
+    doOnStartCheckClick: () -> Unit
 ) {
     if (loginState.hasLogin) {
-        StartCleanLayout(loginState = loginState)
+        StartCleanLayout(loginState = loginState, doOnStartCheckClick = doOnStartCheckClick)
     } else {
         NeedLoginLayout(
             loginState = loginState,
@@ -120,9 +127,58 @@ fun LoginLayout(
 }
 
 @Composable
-fun StartCleanLayout(loginState: LoginState) {
+fun StartCleanLayout(loginState: LoginState, doOnStartCheckClick: () -> Unit) {
+    val loginStateComment = "현재 로그인 되어있는 선생님"
+    val floorText = floorText(loginState.startFloor)
+    val buttonText = "청소검사 시작하기"
     LoginColumn {
-        Text(text = floorText(loginState.startFloor), modifier = Modifier.padding(40.dp))
+        Column {
+            Text(
+                text = floorText,
+                fontSize = 17.sp,
+                color = Color.Black,
+                modifier = Modifier
+                    .padding(40.dp, 0.dp)
+                    .fillMaxWidth()
+            )
+            Text(
+                text = loginStateComment,
+                fontSize = 14.sp,
+                color = Color.Gray,
+                modifier = Modifier
+                    .padding(40.dp, 10.dp)
+                    .fillMaxWidth()
+            )
+            TeacherCardView(teacherName = loginState.teacherName)
+        }
+
+        Spacer(modifier = Modifier.height(200.dp))
+
+        LoginButton(
+            buttonText = buttonText,
+            loginState = loginState,
+            doOnLoginButtonClick = doOnStartCheckClick
+        )
+        Spacer(modifier = Modifier.height(30.dp))
+    }
+}
+
+@Composable
+fun TeacherCardView(teacherName: String) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .padding(40.dp, 0.dp)
+            .height(50.dp)
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(15.dp))
+            .background(Blue700)
+    ) {
+        Row(verticalAlignment = Alignment.Bottom) {
+            val teacherText = "사감선생님"
+            Text(text = teacherName, color = Color.White, fontSize = 20.sp)
+            Text(text = teacherText, color = Color.White)
+        }
     }
 }
 
@@ -149,7 +205,13 @@ fun NeedLoginLayout(
             doOnInputDone = doOnLoginButtonClick
         )
         Spacer(modifier = Modifier.height(280.dp))
-        LoginButton(loginState = loginState, doOnLoginButtonClick = doOnLoginButtonClick)
+        val buttonText = "로그인"
+        LoginButton(
+            buttonText = buttonText,
+            loginState = loginState,
+            doOnLoginButtonClick = doOnLoginButtonClick
+        )
+        Spacer(modifier = Modifier.height(30.dp))
     }
 }
 
@@ -184,11 +246,12 @@ fun PasswordTextField(
 }
 
 @Composable
-fun LoginButton(loginState: LoginState, doOnLoginButtonClick: () -> Unit) {
-    val text = if (loginState.isLoading) "로딩중" else "로그인"
+fun LoginButton(buttonText: String, loginState: LoginState, doOnLoginButtonClick: () -> Unit) {
+    val text = if (loginState.isLoading) "로딩중" else buttonText
     val color = if (loginState.isLoading) Color.Gray else Purple700
     Button(
-        onClick = doOnLoginButtonClick, colors = buttonColors(
+        onClick = doOnLoginButtonClick,
+        colors = buttonColors(
             backgroundColor = color,
             contentColor = Color.White
         ),
@@ -220,13 +283,30 @@ fun LoginColumn(contents: @Composable () -> Unit) {
 @Composable
 fun LoginContentPreview() {
     LoginContent(
-        loginState = LoginState.initial(),
+        loginState = LoginState(
+            true,
+            "박창수",
+            false,
+            5,
+            ""
+        ),
         doOnPasswordInput = {},
-        doOnLoginButtonClick = {})
+        doOnLoginButtonClick = {},
+        doOnStartCheckClick = {}
+    )
 }
 
 @Preview
 @Composable
 fun StartCleanLayoutPreview() {
-    StartCleanLayout(loginState = LoginState.initial())
+    StartCleanLayout(
+        doOnStartCheckClick = {},
+        loginState = LoginState(
+            true,
+            "박창수",
+            false,
+            5,
+            ""
+        )
+    )
 }
