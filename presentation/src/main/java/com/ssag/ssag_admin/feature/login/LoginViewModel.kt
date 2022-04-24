@@ -1,6 +1,7 @@
 package com.ssag.ssag_admin.feature.login
 
 import com.ssag.domain.auth.usecase.LoginUseCase
+import com.ssag.domain.auth.usecase.LogoutUseCase
 import com.ssag.ssag_admin.base.BaseViewModel
 import com.ssag.ssag_admin.base.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -8,7 +9,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val loginUseCase: LoginUseCase
+    private val loginUseCase: LoginUseCase,
+    private val logoutUseCase: LogoutUseCase
 ) : BaseViewModel<LoginState, LoginIntent, LoginViewModel.LoginEvent>() {
 
     override val initialState: LoginState
@@ -29,6 +31,11 @@ class LoginViewModel @Inject constructor(
 
     fun inputPassword(password: String) {
         sendIntent(LoginIntent.InputPassword(password))
+    }
+
+    suspend fun logout() {
+        logoutUseCase.execute(Unit)
+        sendIntent(LoginIntent.Logout)
     }
 
     override fun reduceIntent(oldState: LoginState, intent: LoginIntent) {
