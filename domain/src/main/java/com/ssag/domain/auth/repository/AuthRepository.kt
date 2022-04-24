@@ -6,5 +6,7 @@ interface AuthRepository {
 
     fun login(password: String): TeacherEntity
 
+    fun logout()
+
     fun changePassword(newPassword: String)
 }

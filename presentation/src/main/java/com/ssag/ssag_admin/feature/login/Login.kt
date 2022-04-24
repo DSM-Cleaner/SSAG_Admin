@@ -60,7 +60,9 @@ fun Login(navController: NavController, loginViewModel: LoginViewModel = hiltVie
                 navController.navigate(AppNavigationItem.ChangePassword.route)
             },
             doOnLogoutClick = {
-
+                coroutineScope.launch {
+                    loginViewModel.logout()
+                }
             }
         )
 
