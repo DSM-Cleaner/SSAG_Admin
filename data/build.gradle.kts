@@ -35,7 +35,13 @@ android {
 
 dependencies {
 
+    implementation(project(":domain"))
+
     testImplementation(Dependency.Test.junit)
+
+    implementation(Dependency.Network.retrofit)
+    implementation(Dependency.Network.gsonConverter)
+    implementation(Dependency.Network.okhttp)
 
     implementation(Dependency.DI.inject)
 }

@@ -45,4 +45,10 @@ object Dependency {
         const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Version.coroutine}"
         const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Version.coroutine}"
     }
+
+    object Network {
+        const val retrofit = "com.squareup.retrofit2:retrofit:${Version.retrofit}"
+        const val gsonConverter = "com.squareup.retrofit2:converter-gson:${Version.retrofit}"
+        const val okhttp = "com.squareup.okhttp3:okhttp:${Version.okhttp}"
+    }
 }
