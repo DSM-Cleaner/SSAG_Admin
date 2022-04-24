@@ -12,6 +12,10 @@ class AuthRepositoryImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
+    override fun logout() {
+        TODO("Not yet implemented")
+    }
+
     override fun changePassword(newPassword: String) {
         TODO("Not yet implemented")
     }

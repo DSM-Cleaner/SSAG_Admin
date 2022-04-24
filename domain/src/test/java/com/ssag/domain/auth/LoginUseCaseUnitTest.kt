@@ -17,7 +17,7 @@ class LoginUseCaseUnitTest {
 
     @Test
     fun testLoginUseCase() {
-        val teacherEntity = TeacherEntity(13L, "조건웅")
+        val teacherEntity = TeacherEntity(13L, "조건웅", true)
 
         val password = "password"
 
