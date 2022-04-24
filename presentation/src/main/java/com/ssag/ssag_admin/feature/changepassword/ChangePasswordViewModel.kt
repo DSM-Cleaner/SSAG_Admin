@@ -15,16 +15,20 @@ class ChangePasswordViewModel @Inject constructor(
         get() = ChangePasswordState.initial()
 
     suspend fun changePassword() {
-        kotlin.runCatching {
-            val newPassword = state.value.newPassword
-            changePasswordUseCase.execute(newPassword)
-            sendIntent(ChangePasswordIntent.StartLoading)
-        }.onSuccess {
-            sendEvent(ChangePasswordEvent.ChangePasswordSuccess)
-        }.onFailure {
-            sendEvent(ChangePasswordEvent.ChangePasswordFail)
-        }.also {
-            sendIntent(ChangePasswordIntent.FinishLoading)
+        if(state.value.isDoneInput()) {
+            kotlin.runCatching {
+                val newPassword = state.value.newPassword
+                changePasswordUseCase.execute(newPassword)
+                sendIntent(ChangePasswordIntent.StartLoading)
+            }.onSuccess {
+                sendEvent(ChangePasswordEvent.ChangePasswordSuccess)
+            }.onFailure {
+                sendEvent(ChangePasswordEvent.ChangePasswordFail)
+            }.also {
+                sendIntent(ChangePasswordIntent.FinishLoading)
+            }
+        } else {
+            sendEvent(ChangePasswordEvent.NotDoneInput)
         }
     }
 
@@ -92,15 +96,25 @@ class ChangePasswordViewModel @Inject constructor(
     }
 
     private fun checkPasswordIsDifferent() {
-        if (state.value.newPassword != state.value.confirmPassword && state.value.confirmPassword.isNotBlank()) {
+        if (state.value.isConfirmPasswordDifferent() && state.value.confirmPassword.isNotBlank()) {
             sendIntent(ChangePasswordIntent.SetPasswordIsDifferent)
         } else {
             sendIntent(ChangePasswordIntent.SetPasswordIsSame)
         }
     }
 
+    private fun ChangePasswordState.isConfirmPasswordDifferent(): Boolean =
+        newPassword != confirmPassword
+
+    private fun ChangePasswordState.isConfirmPasswordSame(): Boolean =
+        newPassword == confirmPassword
+
+    private fun ChangePasswordState.isDoneInput(): Boolean =
+        newPassword.isNotBlank() && currentPassword.isNotBlank() && confirmPassword.isNotBlank() && isConfirmPasswordSame()
+
     sealed class ChangePasswordEvent : Event {
         object ChangePasswordFail : ChangePasswordEvent()
         object ChangePasswordSuccess : ChangePasswordEvent()
+        object NotDoneInput : ChangePasswordEvent()
     }
 }

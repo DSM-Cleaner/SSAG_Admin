@@ -9,6 +9,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.ssag.ssag_admin.base.observeWithLifecycle
 import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.launch
 
 @OptIn(InternalCoroutinesApi::class)
 @Composable
@@ -24,11 +25,25 @@ fun ChangePassword(
 
     Scaffold(scaffoldState = scaffoldState) {
 
+        ChangePasswordContent(
+            state = changePasswordState,
+            doOnChangePasswordClick = {
+                coroutineScope.launch {
+                    changePasswordViewModel.changePassword()
+                }
+            }
+        )
+
         changePasswordViewModel.event.observeWithLifecycle {
             when (it) {
                 is ChangePasswordViewModel.ChangePasswordEvent.ChangePasswordFail -> {
                     val changePasswordFailComment = "비밀번호 변경을 실패했습니다."
                     scaffoldState.snackbarHostState.showSnackbar(changePasswordFailComment)
+                }
+
+                is ChangePasswordViewModel.ChangePasswordEvent.NotDoneInput -> {
+                    val notDoneInputComment = "모든 정보를 입력해주세요"
+                    scaffoldState.snackbarHostState.showSnackbar(notDoneInputComment)
                 }
 
                 is ChangePasswordViewModel.ChangePasswordEvent.ChangePasswordSuccess -> {
@@ -39,4 +54,9 @@ fun ChangePassword(
             }
         }
     }
+}
+
+@Composable
+fun ChangePasswordContent(state: ChangePasswordState, doOnChangePasswordClick: () -> Unit) {
+
 }
