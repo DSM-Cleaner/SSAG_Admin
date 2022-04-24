@@ -245,11 +245,13 @@ fun NeedLoginLayout(
     doOnLoginButtonClick: () -> Unit
 ) {
     val authComment = "Tip: 비밀번호를 통해 청소 검사를 하시는 선생님이 누구인지 구별합니다."
+    val passwordLabel = "비밀번호를 입력해 주세요"
     LoginColumn {
         Text(text = authComment, modifier = Modifier.padding(40.dp), color = Blue700)
         PasswordTextField(
             passwordText = loginState.password,
             doOnPasswordInput = doOnPasswordInput,
+            labelText = passwordLabel,
             doOnInputDone = doOnLoginButtonClick
         )
         Spacer(modifier = Modifier.height(280.dp))
@@ -266,11 +268,10 @@ fun NeedLoginLayout(
 @Composable
 fun PasswordTextField(
     passwordText: String,
+    labelText: String,
     doOnPasswordInput: (String) -> Unit,
     doOnInputDone: () -> Unit
 ) {
-    val askInputPasswordComment = "비밀번호를 입력해 주세요"
-
     val focusManager = LocalFocusManager.current
     OutlinedTextField(
         value = passwordText,
@@ -289,7 +290,7 @@ fun PasswordTextField(
             }
         ),
         visualTransformation = PasswordVisualTransformation(),
-        label = { Text(text = askInputPasswordComment) }
+        label = { Text(text = labelText) }
     )
 }
 
