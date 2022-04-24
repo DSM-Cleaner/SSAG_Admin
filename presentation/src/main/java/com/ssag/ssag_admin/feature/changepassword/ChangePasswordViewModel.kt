@@ -15,7 +15,7 @@ class ChangePasswordViewModel @Inject constructor(
         get() = ChangePasswordState.initial()
 
     suspend fun changePassword() {
-        if(state.value.isDoneInput()) {
+        if (state.value.isDoneInput()) {
             kotlin.runCatching {
                 val newPassword = state.value.newPassword
                 changePasswordUseCase.execute(newPassword)
@@ -30,6 +30,18 @@ class ChangePasswordViewModel @Inject constructor(
         } else {
             sendEvent(ChangePasswordEvent.NotDoneInput)
         }
+    }
+
+    fun inputCurrentPassword(password: String) {
+        sendIntent(ChangePasswordIntent.InputCurrentPassword(password))
+    }
+
+    fun inputNewPassword(password: String) {
+        sendIntent(ChangePasswordIntent.InputNewPassword(password))
+    }
+
+    fun inputConfirmPassword(password: String) {
+        sendIntent(ChangePasswordIntent.InputConfirmPassword(password))
     }
 
     override fun reduceIntent(oldState: ChangePasswordState, intent: ChangePasswordIntent) {
