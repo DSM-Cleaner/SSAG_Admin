@@ -1,6 +1,7 @@
 package com.ssag.ssag_admin.feature.changepassword
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -12,6 +13,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
@@ -182,7 +184,9 @@ fun ChangePasswordButton(
     Button(
         onClick = doOnChangePasswordClick,
         colors = buttonColors(backgroundColor = buttonColor),
-        modifier = Modifier.size(250.dp, 40.dp)
+        modifier = Modifier
+            .size(250.dp, 40.dp)
+            .clip(RoundedCornerShape(15.dp))
     ) {
         Text(text = buttonText)
     }
