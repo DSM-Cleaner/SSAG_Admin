@@ -4,9 +4,7 @@ data class RoomStateEntity(
     val lightIsComplete: Boolean,
     val plugIsComplete: Boolean,
     val shoesAreComplete: Boolean,
-    val studentA: StudentEntity,
-    val studentB: StudentEntity,
-    val studentC: StudentEntity
+    val students: List<StudentEntity>
 ) {
 
     data class StudentEntity(
