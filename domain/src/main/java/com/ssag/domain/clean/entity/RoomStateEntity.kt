@@ -8,8 +8,10 @@ data class RoomStateEntity(
 ) {
 
     data class StudentEntity(
+        val bedPosition: String,
         val gcn: Int,
         val name: String,
-        val cleanState: CleanStateEntity
+        val cleanState: CleanStateEntity,
+        val personalPlaceEntity: PersonalPlaceEntity
     )
 }
