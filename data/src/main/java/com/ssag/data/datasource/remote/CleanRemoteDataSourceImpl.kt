@@ -16,7 +16,6 @@ class CleanRemoteDataSourceImpl @Inject constructor(
         cleanApi.postCleanState(roomId, request)
     }
 
-    override suspend fun fetchRoomState(): RoomStateEntity {
-        TODO("Not yet implemented")
-    }
+    override suspend fun fetchRoomState(roomId: Int): RoomStateEntity =
+        cleanApi.fetchRoomState(roomId).toEntity()
 }

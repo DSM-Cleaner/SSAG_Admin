@@ -5,6 +5,5 @@ data class StudentEntity(
     val bedPosition: String,
     val gcn: Int,
     val name: String,
-    val cleanState: CleanStateEntity,
-    val personalPlaceEntity: PersonalPlaceEntity
+    val cleanState: CleanStateEntity
 )

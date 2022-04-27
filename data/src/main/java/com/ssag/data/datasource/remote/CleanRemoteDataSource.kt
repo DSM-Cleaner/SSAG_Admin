@@ -7,5 +7,5 @@ interface CleanRemoteDataSource {
 
     suspend fun postCleanState(postCleanStateParameter: PostCleanStateParameter)
 
-    suspend fun fetchRoomState(): RoomStateEntity
+    suspend fun fetchRoomState(roomId: Int): RoomStateEntity
 }
