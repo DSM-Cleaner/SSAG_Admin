@@ -1,13 +1,11 @@
 package com.ssag.domain.clean.parameter
 
-import com.ssag.domain.clean.entity.CleanStateEntity
+import com.ssag.domain.clean.entity.StudentEntity
 
 data class PostCleanStateParameter(
     val roomId: Int,
-    val lightIsComplete: Boolean,
-    val plusIsComplete: Boolean,
-    val shoesAreComplete: Boolean,
-    val studentA: CleanStateEntity,
-    val studentB: CleanStateEntity,
-    val studentC: CleanStateEntity
+    val lightIsNotComplete: Boolean,
+    val plugIsNotComplete: Boolean,
+    val shoesAreNotComplete: Boolean,
+    val studentList: List<StudentEntity>
 )
