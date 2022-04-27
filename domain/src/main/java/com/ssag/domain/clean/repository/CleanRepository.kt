@@ -5,7 +5,7 @@ import com.ssag.domain.clean.parameter.PostCleanStateParameter
 
 interface CleanRepository {
 
-    fun postCleanState(postCleanStateParameter: PostCleanStateParameter)
+    suspend fun postCleanState(postCleanStateParameter: PostCleanStateParameter)
 
-    fun fetchRoomState(roomId: Int): RoomStateEntity
+    suspend fun fetchRoomState(roomId: Int): RoomStateEntity
 }

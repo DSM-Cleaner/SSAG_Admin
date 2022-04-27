@@ -3,7 +3,6 @@ package com.ssag.data.remote.request
 import com.google.gson.annotations.SerializedName
 import com.ssag.data.toInt
 import com.ssag.domain.clean.entity.StudentEntity
-import com.ssag.domain.clean.entity.isComplete
 import com.ssag.domain.clean.parameter.PostCleanStateParameter
 
 data class PostRoomStateRequest(
@@ -23,9 +22,9 @@ data class PostRoomStateRequest(
 
 fun PostCleanStateParameter.toRequest() =
     PostRoomStateRequest(
-        light = lightIsComplete,
-        plug = plugIsComplete,
-        shoes = shoesAreComplete,
+        light = lightIsNotComplete,
+        plug = plugIsNotComplete,
+        shoes = shoesAreNotComplete,
         studentList = studentList.toRequest()
     )
 
@@ -37,5 +36,5 @@ fun StudentEntity.toRequest() =
         id = id,
         bedding = cleanState.beddingIsNotClean.toInt(),
         clothes = cleanState.clotheIsNotClean.toInt(),
-        personalPlace = personalPlaceEntity.isComplete()
+        personalPlace = cleanState.personalPlaceIsNotClean
     )

@@ -4,8 +4,8 @@ import com.ssag.domain.clean.entity.StudentEntity
 
 data class PostCleanStateParameter(
     val roomId: Int,
-    val lightIsComplete: Boolean,
-    val plugIsComplete: Boolean,
-    val shoesAreComplete: Boolean,
+    val lightIsNotComplete: Boolean,
+    val plugIsNotComplete: Boolean,
+    val shoesAreNotComplete: Boolean,
     val studentList: List<StudentEntity>
 )
