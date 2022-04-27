@@ -18,9 +18,9 @@ class FetchRoomStateUseCaseUnitTest {
     @Test
     fun testFetchRoomStateUseCase() {
         val roomStateEntity = RoomStateEntity(
-            lightIsComplete = true,
-            plugIsComplete = true,
-            shoesAreComplete = true,
+            lightIsNotComplete = true,
+            plugIsNotComplete = true,
+            shoesAreNotComplete = true,
             students = emptyList()
         )
 

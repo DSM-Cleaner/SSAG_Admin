@@ -1,6 +1,10 @@
 package com.ssag.data.remote.request
 
 import com.google.gson.annotations.SerializedName
+import com.ssag.data.toInt
+import com.ssag.domain.clean.entity.StudentEntity
+import com.ssag.domain.clean.entity.isComplete
+import com.ssag.domain.clean.parameter.PostCleanStateParameter
 
 data class PostRoomStateRequest(
     @SerializedName("light") val light: Boolean,
@@ -16,3 +20,22 @@ data class PostRoomStateRequest(
         @SerializedName("personal_place") val personalPlace: Boolean?
     )
 }
+
+fun PostCleanStateParameter.toRequest() =
+    PostRoomStateRequest(
+        light = lightIsComplete,
+        plug = plugIsComplete,
+        shoes = shoesAreComplete,
+        studentList = studentList.toRequest()
+    )
+
+fun List<StudentEntity>.toRequest() =
+    this.map { it.toRequest() }
+
+fun StudentEntity.toRequest() =
+    PostRoomStateRequest.StudentRequest(
+        id = id,
+        bedding = cleanState.beddingIsNotClean.toInt(),
+        clothes = cleanState.clotheIsNotClean.toInt(),
+        personalPlace = personalPlaceEntity.isComplete()
+    )

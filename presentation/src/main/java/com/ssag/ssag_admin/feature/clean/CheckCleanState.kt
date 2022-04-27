@@ -11,9 +11,9 @@ data class CheckCleanState(val roomNumber: Int, val cleanState: RoomStateEntity)
             CheckCleanState(
                 0,
                 RoomStateEntity(
-                    lightIsComplete = true,
-                    plugIsComplete = true,
-                    shoesAreComplete = true,
+                    lightIsNotComplete = true,
+                    plugIsNotComplete = true,
+                    shoesAreNotComplete = true,
                     students = emptyList()
                 )
             )
