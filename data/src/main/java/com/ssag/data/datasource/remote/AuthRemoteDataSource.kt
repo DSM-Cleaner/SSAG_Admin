@@ -1,13 +1,11 @@
-package com.ssag.domain.auth.repository
+package com.ssag.data.datasource.remote
 
 import com.ssag.domain.auth.entity.TeacherEntity
 import com.ssag.domain.auth.parameter.ChangePasswordParameter
 
-interface AuthRepository {
+interface AuthRemoteDataSource {
 
     suspend fun login(password: String): TeacherEntity
 
-    suspend fun logout()
-
-    suspend fun changePassword(newPassword: ChangePasswordParameter)
+    suspend fun changePassword(changePasswordParameter: ChangePasswordParameter)
 }
