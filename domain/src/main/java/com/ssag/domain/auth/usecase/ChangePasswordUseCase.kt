@@ -10,6 +10,6 @@ class ChangePasswordUseCase @Inject constructor(
 ) : UseCase<ChangePasswordParameter, Unit>(){
 
     override suspend fun execute(data: ChangePasswordParameter) {
-        authRepository.changePassword(data)
+        authRepository.changePassword()
     }
 }

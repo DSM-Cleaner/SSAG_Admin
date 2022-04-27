@@ -9,5 +9,5 @@ interface AuthRepository {
 
     suspend fun logout()
 
-    suspend fun changePassword(newPassword: ChangePasswordParameter)
+    suspend fun changePassword(changePasswordParameter: ChangePasswordParameter)
 }
