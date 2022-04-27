@@ -1,19 +1,16 @@
-package com.ssag.data.remote.response
+package com.ssag.data.remote.request
 
 import com.google.gson.annotations.SerializedName
 
-data class FetchRoomStateResponse(
+data class PostRoomStateRequest(
     @SerializedName("light") val light: Boolean,
     @SerializedName("plug") val plug: Boolean,
     @SerializedName("shoes") val shoes: Boolean,
-    @SerializedName("student_list") val studentList: List<StudentResponse>
+    @SerializedName("student_list") val studentList: List<StudentRequest>
 ) {
 
-    data class StudentResponse(
+    data class StudentRequest(
         @SerializedName("id") val id: Long,
-        @SerializedName("bed") val bed: String,
-        @SerializedName("gcn") val gcn: Int,
-        @SerializedName("name") val name: String,
         @SerializedName("bedding") val bedding: Int,
         @SerializedName("clothes") val clothes: Int,
         @SerializedName("personal_place") val personalPlace: Boolean?
