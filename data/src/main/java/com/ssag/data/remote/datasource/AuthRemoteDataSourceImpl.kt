@@ -1,4 +1,4 @@
-package com.ssag.data.datasource.remote
+package com.ssag.data.remote.datasource
 
 import com.ssag.data.remote.api.AuthApi
 import com.ssag.data.remote.request.ChangePasswordRequest

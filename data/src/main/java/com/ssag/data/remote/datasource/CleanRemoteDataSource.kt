@@ -1,4 +1,4 @@
-package com.ssag.data.datasource.remote
+package com.ssag.data.remote.datasource
 
 import com.ssag.domain.clean.entity.RoomStateEntity
 import com.ssag.domain.clean.parameter.PostCleanStateParameter

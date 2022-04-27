@@ -1,4 +1,4 @@
-package com.ssag.data.datasource.remote
+package com.ssag.data.remote.datasource
 
 import com.ssag.domain.auth.entity.TeacherEntity
 import com.ssag.domain.auth.parameter.ChangePasswordParameter

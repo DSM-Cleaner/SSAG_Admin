@@ -1,6 +1,6 @@
 package com.ssag.data.repository
 
-import com.ssag.data.datasource.remote.AuthRemoteDataSource
+import com.ssag.data.remote.datasource.AuthRemoteDataSource
 import com.ssag.domain.auth.entity.TeacherEntity
 import com.ssag.domain.auth.parameter.ChangePasswordParameter
 import com.ssag.domain.auth.repository.AuthRepository
