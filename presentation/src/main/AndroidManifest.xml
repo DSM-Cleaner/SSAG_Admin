@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ssag.ssag_admin">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".di.SsagApplication"
         android:allowBackup="true"

@@ -1,5 +1,6 @@
 package com.ssag.ssag_admin.feature.changepassword
 
+import com.ssag.domain.auth.parameter.ChangePasswordParameter
 import com.ssag.domain.auth.usecase.ChangePasswordUseCase
 import com.ssag.ssag_admin.base.BaseViewModel
 import com.ssag.ssag_admin.base.Event
@@ -18,7 +19,13 @@ class ChangePasswordViewModel @Inject constructor(
         if (state.value.isDoneInput()) {
             kotlin.runCatching {
                 val newPassword = state.value.newPassword
-                changePasswordUseCase.execute(newPassword)
+                val currentPassword = state.value.currentPassword
+                changePasswordUseCase.execute(
+                    ChangePasswordParameter(
+                        newPassword = newPassword,
+                        currentPassword = currentPassword
+                    )
+                )
                 sendIntent(ChangePasswordIntent.StartLoading)
             }.onSuccess {
                 sendEvent(ChangePasswordEvent.ChangePasswordSuccess)
