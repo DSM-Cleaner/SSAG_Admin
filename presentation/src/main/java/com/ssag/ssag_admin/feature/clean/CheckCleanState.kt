@@ -5,7 +5,7 @@ import com.ssag.ssag_admin.base.State
 
 data class CheckCleanState(
     val roomNumber: Int,
-    val showCollectRoomDialog: Boolean,
+    val showSelectRoomDialog: Boolean,
     val cleanState: RoomStateEntity
 ) : State {
 
@@ -14,7 +14,7 @@ data class CheckCleanState(
         fun initial() =
             CheckCleanState(
                 roomNumber = 0,
-                showCollectRoomDialog = false,
+                showSelectRoomDialog = false,
                 RoomStateEntity(
                     lightIsNotComplete = false,
                     plugIsNotComplete = false,
