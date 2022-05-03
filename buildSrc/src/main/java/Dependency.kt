@@ -50,4 +50,9 @@ object Dependency {
         const val okhttp = "com.squareup.okhttp3:okhttp:${Version.okhttp}"
         const val loggingInterceptor = "com.squareup.okhttp3:logging-interceptor:${Version.okhttp}"
     }
+
+    object Local {
+        const val dataStore = "androidx.datastore:datastore:${Version.dataStore}"
+        const val dataStorePreference = "androidx.datastore:datastore-preferences:${Version.dataStore}"
+    }
 }

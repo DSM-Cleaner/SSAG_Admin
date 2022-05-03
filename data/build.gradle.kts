@@ -45,5 +45,10 @@ dependencies {
     implementation(Dependency.Network.gsonConverter)
     implementation(Dependency.Network.okhttp)
 
+    implementation(Dependency.Local.dataStore)
+    implementation(Dependency.Local.dataStorePreference)
+
     implementation(Dependency.DI.inject)
+    implementation(Dependency.DI.hiltAndroid)
+    kapt(Dependency.DI.hiltCompiler)
 }
