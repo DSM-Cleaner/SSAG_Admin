@@ -1,6 +1,6 @@
 package com.ssag.data.repository
 
-import com.ssag.data.datasource.remote.CleanRemoteDataSource
+import com.ssag.data.remote.datasource.CleanRemoteDataSource
 import com.ssag.domain.clean.entity.RoomStateEntity
 import com.ssag.domain.clean.parameter.PostCleanStateParameter
 import com.ssag.domain.clean.repository.CleanRepository

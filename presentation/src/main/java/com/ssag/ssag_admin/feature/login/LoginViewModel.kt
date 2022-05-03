@@ -17,15 +17,17 @@ class LoginViewModel @Inject constructor(
         get() = LoginState.initial()
 
     suspend fun login() {
-        kotlin.runCatching {
-            sendIntent(LoginIntent.StartLoading)
-            loginUseCase.execute(state.value.password)
-        }.onSuccess {
-            sendIntent(LoginIntent.SuccessLogin(it))
-        }.onFailure {
-            sendEvent(LoginEvent.FailedLogin)
-        }.also {
-            sendIntent(LoginIntent.FinishLoading)
+        if (!state.value.isLoading) {
+            kotlin.runCatching {
+                sendIntent(LoginIntent.StartLoading)
+                loginUseCase.execute(state.value.password)
+            }.onSuccess {
+                sendIntent(LoginIntent.SuccessLogin(it))
+            }.onFailure {
+                sendEvent(LoginEvent.FailedLogin)
+            }.also {
+                sendIntent(LoginIntent.FinishLoading)
+            }
         }
     }
 

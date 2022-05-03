@@ -48,5 +48,11 @@ object Dependency {
         const val retrofit = "com.squareup.retrofit2:retrofit:${Version.retrofit}"
         const val gsonConverter = "com.squareup.retrofit2:converter-gson:${Version.retrofit}"
         const val okhttp = "com.squareup.okhttp3:okhttp:${Version.okhttp}"
+        const val loggingInterceptor = "com.squareup.okhttp3:logging-interceptor:${Version.okhttp}"
+    }
+
+    object Local {
+        const val dataStore = "androidx.datastore:datastore:${Version.dataStore}"
+        const val dataStorePreference = "androidx.datastore:datastore-preferences:${Version.dataStore}"
     }
 }
