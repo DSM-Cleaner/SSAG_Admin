@@ -5,6 +5,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.ssag.ssag_admin.feature.changepassword.ChangePassword
+import com.ssag.ssag_admin.feature.clean.CheckClean
 import com.ssag.ssag_admin.feature.login.Login
 import com.ssag.ssag_admin.ui.navigation.AppNavigationItem
 
@@ -15,9 +16,13 @@ fun SsagApp() {
         composable(AppNavigationItem.Login.route) {
             Login(navController = navController)
         }
-        
+
         composable(AppNavigationItem.ChangePassword.route) {
             ChangePassword(navController = navController)
+        }
+
+        composable(AppNavigationItem.CheckClean.route) {
+            CheckClean(navController = navController)
         }
     }
 }

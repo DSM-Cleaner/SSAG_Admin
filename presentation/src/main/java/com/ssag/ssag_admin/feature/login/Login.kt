@@ -247,14 +247,16 @@ fun NeedLoginLayout(
     val authComment = "Tip: 비밀번호를 통해 청소 검사를 하시는 선생님이 누구인지 구별합니다."
     val passwordLabel = "비밀번호를 입력해 주세요"
     LoginColumn {
-        Text(text = authComment, modifier = Modifier.padding(40.dp), color = Blue700)
-        PasswordTextField(
-            passwordText = loginState.password,
-            doOnPasswordInput = doOnPasswordInput,
-            labelText = passwordLabel,
-            doOnInputDone = doOnLoginButtonClick
-        )
-        Spacer(modifier = Modifier.height(280.dp))
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(text = authComment, modifier = Modifier.padding(40.dp), color = Blue700)
+            PasswordTextField(
+                passwordText = loginState.password,
+                doOnPasswordInput = doOnPasswordInput,
+                labelText = passwordLabel,
+                doOnInputDone = doOnLoginButtonClick
+            )
+        }
+        Spacer(modifier = Modifier.height(190.dp))
         val buttonText = "로그인"
         LoginButton(
             buttonText = buttonText,
