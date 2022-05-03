@@ -39,6 +39,8 @@ dependencies {
 
     testImplementation(Dependency.Test.junit)
 
+    implementation(Dependency.Coroutine.core)
+
     implementation(Dependency.Network.retrofit)
     implementation(Dependency.Network.gsonConverter)
     implementation(Dependency.Network.okhttp)

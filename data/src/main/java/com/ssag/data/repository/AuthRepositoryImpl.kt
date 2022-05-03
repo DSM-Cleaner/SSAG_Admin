@@ -14,7 +14,7 @@ class AuthRepositoryImpl @Inject constructor(
         authRemoteDataSource.login(password)
 
     override suspend fun logout() {
-        TODO("Not yet implemented")
+        //TODO("Not yet implemented")
     }
 
     override suspend fun changePassword(changePasswordParameter: ChangePasswordParameter) {
