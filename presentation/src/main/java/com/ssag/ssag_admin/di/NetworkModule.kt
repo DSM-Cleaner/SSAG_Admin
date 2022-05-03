@@ -1,5 +1,6 @@
 package com.ssag.ssag_admin.di
 
+import com.ssag.data.interceptor.AuthInterceptor
 import com.ssag.data.remote.api.AuthApi
 import dagger.Module
 import dagger.Provides
@@ -23,11 +24,13 @@ object NetworkModule {
 
     @Provides
     fun provideOkHttpClient(
-        httpLoggingInterceptor: HttpLoggingInterceptor
+        httpLoggingInterceptor: HttpLoggingInterceptor,
+        authInterceptor: AuthInterceptor
     ): OkHttpClient =
         OkHttpClient
             .Builder()
             .addInterceptor(httpLoggingInterceptor)
+            .addInterceptor(authInterceptor)
             .build()
 
     @Provides
