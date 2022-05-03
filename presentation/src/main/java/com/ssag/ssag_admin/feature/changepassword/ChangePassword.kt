@@ -59,7 +59,6 @@ fun ChangePassword(
             )
         }
     ) {
-
         ChangePasswordContent(
             state = changePasswordState,
             doOnChangePasswordClick = {
