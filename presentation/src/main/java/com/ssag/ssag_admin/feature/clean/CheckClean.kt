@@ -1,11 +1,8 @@
 package com.ssag.ssag_admin.feature.clean
 
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -142,9 +139,13 @@ fun CheckCleanStudentRow(
     doOnBedToggleClick: (Boolean) -> Unit,
     doOnClotheToggleClick: (Boolean) -> Unit
 ) {
-    Row(modifier = Modifier.fillMaxWidth()) {
+    Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         StudentInfoView(student = student)
-        Row(horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.fillMaxWidth()) {
+        Row(
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ) {
 
             CleanToggleButton(
                 isChecked = student.cleanState.beddingIsNotClean,
@@ -178,9 +179,16 @@ fun StudentInfoView(student: StudentEntity) {
 
 @Composable
 fun CleanToggleButton(isChecked: Boolean, onCheckValueChange: (Boolean) -> Unit) {
-    IconToggleButton(checked = isChecked, onCheckedChange = onCheckValueChange) {
+    IconToggleButton(
+        checked = isChecked,
+        onCheckedChange = onCheckValueChange
+    ) {
         val iconResId = if (isChecked) R.drawable.ic_check else R.drawable.ic_un_check
-        Icon(painter = painterResource(id = iconResId), contentDescription = "check_toggle")
+        Image(
+            painter = painterResource(id = iconResId),
+            contentDescription = "check_toggle",
+            modifier = Modifier.size(33.dp)
+        )
     }
 }
 

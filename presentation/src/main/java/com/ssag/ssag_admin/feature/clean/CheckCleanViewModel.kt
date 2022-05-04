@@ -22,18 +22,14 @@ class CheckCleanViewModel @Inject constructor(
             is CheckCleanIntent.SetLightIsClean -> {
                 setState(
                     oldState.copy(
-                        cleanState = oldState.cleanState.copy(
-                            lightIsNotComplete = false
-                        )
+                        cleanState = oldState.cleanState.copy(lightIsNotComplete = false)
                     )
                 )
             }
             is CheckCleanIntent.SetLightIsNotClean -> {
                 setState(
                     oldState.copy(
-                        cleanState = oldState.cleanState.copy(
-                            lightIsNotComplete = true
-                        )
+                        cleanState = oldState.cleanState.copy(lightIsNotComplete = true)
                     )
                 )
             }
@@ -41,18 +37,14 @@ class CheckCleanViewModel @Inject constructor(
             is CheckCleanIntent.SetPlugIsClean -> {
                 setState(
                     oldState.copy(
-                        cleanState = oldState.cleanState.copy(
-                            plugIsNotComplete = false
-                        )
+                        cleanState = oldState.cleanState.copy(plugIsNotComplete = false)
                     )
                 )
             }
             is CheckCleanIntent.SetPlugIsNotClean -> {
                 setState(
                     oldState.copy(
-                        cleanState = oldState.cleanState.copy(
-                            plugIsNotComplete = true
-                        )
+                        cleanState = oldState.cleanState.copy(plugIsNotComplete = true)
                     )
                 )
             }
@@ -60,27 +52,74 @@ class CheckCleanViewModel @Inject constructor(
             is CheckCleanIntent.SetShoesAreClean -> {
                 setState(
                     oldState.copy(
-                        cleanState = oldState.cleanState.copy(
-                            shoesAreNotComplete = false
-                        )
+                        cleanState = oldState.cleanState.copy(shoesAreNotComplete = false)
                     )
                 )
             }
             is CheckCleanIntent.SetShoesAreNotClean -> {
                 setState(
                     oldState.copy(
-                        cleanState = oldState.cleanState.copy(
-                            shoesAreNotComplete = true
-                        )
+                        cleanState = oldState.cleanState.copy(shoesAreNotComplete = true)
                     )
                 )
             }
 
             is CheckCleanIntent.SetStudentBedIsClean -> {
+                setState(
+                    oldState.copy(
+                        cleanState = oldState.cleanState.copy(
+                            students = oldState.cleanState.students.map { oldStateStudent ->
+                                if (oldStateStudent.id == intent.studentId) oldStateStudent.copy(
+                                    cleanState = oldStateStudent.cleanState.copy(beddingIsNotClean = false)
+                                )
+                                else oldStateStudent
+                            }
+                        )
+                    )
+                )
             }
-            is CheckCleanIntent.SetStudentBedIsNotClean -> TODO()
-            is CheckCleanIntent.SetStudentClotheIsClean -> TODO()
-            is CheckCleanIntent.SetStudentClotheIsNotClean -> TODO()
+            is CheckCleanIntent.SetStudentBedIsNotClean -> {
+                setState(
+                    oldState.copy(
+                        cleanState = oldState.cleanState.copy(
+                            students = oldState.cleanState.students.map { oldStateStudent ->
+                                if (oldStateStudent.id == intent.studentId) oldStateStudent.copy(
+                                    cleanState = oldStateStudent.cleanState.copy(beddingIsNotClean = true)
+                                )
+                                else oldStateStudent
+                            }
+                        )
+                    )
+                )
+            }
+            is CheckCleanIntent.SetStudentClotheIsClean -> {
+                setState(
+                    oldState.copy(
+                        cleanState = oldState.cleanState.copy(
+                            students = oldState.cleanState.students.map { oldStateStudent ->
+                                if (oldStateStudent.id == intent.studentId) oldStateStudent.copy(
+                                    cleanState = oldStateStudent.cleanState.copy(clotheIsNotClean = false)
+                                )
+                                else oldStateStudent
+                            }
+                        )
+                    )
+                )
+            }
+            is CheckCleanIntent.SetStudentClotheIsNotClean -> {
+                setState(
+                    oldState.copy(
+                        cleanState = oldState.cleanState.copy(
+                            students = oldState.cleanState.students.map { oldStateStudent ->
+                                if (oldStateStudent.id == intent.studentId) oldStateStudent.copy(
+                                    cleanState = oldStateStudent.cleanState.copy(clotheIsNotClean = true)
+                                )
+                                else oldStateStudent
+                            }
+                        )
+                    )
+                )
+            }
 
         }
     }
