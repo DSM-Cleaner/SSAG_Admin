@@ -13,6 +13,22 @@ class CheckCleanViewModel @Inject constructor(
     override val initialState: CheckCleanState
         get() = CheckCleanState.initial()
 
+    fun setStudentBedIsClean(id: Long) {
+        sendIntent(CheckCleanIntent.SetStudentBedIsClean(id))
+    }
+
+    fun setStudentBedIsNotClean(id: Long) {
+        sendIntent(CheckCleanIntent.SetStudentBedIsNotClean(id))
+    }
+
+    fun setStudentClotheIsClean(id: Long) {
+        sendIntent(CheckCleanIntent.SetStudentClotheIsClean(id))
+    }
+
+    fun setStudentClotheIsNotClean(id: Long) {
+        sendIntent(CheckCleanIntent.SetStudentClotheIsNotClean(id))
+    }
+
     override fun reduceIntent(oldState: CheckCleanState, intent: CheckCleanIntent) {
         when (intent) {
             is CheckCleanIntent.MoveToBeforeRoom -> TODO()

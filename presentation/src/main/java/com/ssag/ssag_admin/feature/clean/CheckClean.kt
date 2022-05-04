@@ -45,16 +45,16 @@ fun CheckClean(
         CheckCleanContent(
             checkCleanState = checkCleanState,
             doOnStudentClotheIsClean = { studentId ->
-
+                checkCleanViewModel.setStudentClotheIsClean(studentId)
             },
             doOnStudentClotheIsNotClean = { studentId ->
-
-            },
-            doOnStudentBedIsNotClean = { studentId ->
-
+                checkCleanViewModel.setStudentClotheIsNotClean(studentId)
             },
             doOnStudentBedIsClean = { studentId ->
-
+                checkCleanViewModel.setStudentBedIsClean(studentId)
+            },
+            doOnStudentBedIsNotClean = { studentId ->
+                checkCleanViewModel.setStudentBedIsNotClean(studentId)
             }
         )
     }
@@ -134,7 +134,7 @@ fun CheckCleanContent(
                         else doOnStudentBedIsClean(student.id)
                     },
                     doOnClotheToggleClick = { isChecked ->
-                        if(isChecked) doOnStudentClotheIsNotClean(student.id)
+                        if (isChecked) doOnStudentClotheIsNotClean(student.id)
                         else doOnStudentClotheIsClean(student.id)
                     }
                 )
