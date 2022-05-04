@@ -42,7 +42,21 @@ fun CheckClean(
             )
         }
     ) {
-        CheckCleanContent(checkCleanState = checkCleanState)
+        CheckCleanContent(
+            checkCleanState = checkCleanState,
+            doOnStudentClotheIsClean = { studentId ->
+
+            },
+            doOnStudentClotheIsNotClean = { studentId ->
+
+            },
+            doOnStudentBedIsNotClean = { studentId ->
+
+            },
+            doOnStudentBedIsClean = { studentId ->
+
+            }
+        )
     }
 }
 
@@ -91,7 +105,11 @@ fun CheckCleanTopBarContent(
 
 @Composable
 fun CheckCleanContent(
-    checkCleanState: CheckCleanState
+    checkCleanState: CheckCleanState,
+    doOnStudentBedIsNotClean: (Long) -> Unit,
+    doOnStudentBedIsClean: (Long) -> Unit,
+    doOnStudentClotheIsNotClean: (Long) -> Unit,
+    doOnStudentClotheIsClean: (Long) -> Unit
 ) {
     val scrollState = rememberScrollState()
     Column(
@@ -108,11 +126,17 @@ fun CheckCleanContent(
                 .fillMaxWidth()
         )
         CheckCleanCardView {
-            checkCleanState.cleanState.students.forEach {
+            checkCleanState.cleanState.students.forEach { student ->
                 CheckCleanStudentRow(
-                    student = it,
-                    doOnBedToggleClick = {},
-                    doOnClotheToggleClick = {}
+                    student = student,
+                    doOnBedToggleClick = { isChecked ->
+                        if (isChecked) doOnStudentBedIsNotClean(student.id)
+                        else doOnStudentBedIsClean(student.id)
+                    },
+                    doOnClotheToggleClick = { isChecked ->
+                        if(isChecked) doOnStudentClotheIsNotClean(student.id)
+                        else doOnStudentClotheIsClean(student.id)
+                    }
                 )
             }
         }
@@ -227,5 +251,11 @@ fun CheckCleanCardViewPreview() {
 @Preview(showBackground = true)
 @Composable
 fun CheckCleanContentPreview() {
-    CheckCleanContent(checkCleanState = CheckCleanState.initial())
+    CheckCleanContent(
+        checkCleanState = CheckCleanState.initial(),
+        doOnStudentBedIsClean = {},
+        doOnStudentBedIsNotClean = {},
+        doOnStudentClotheIsClean = {},
+        doOnStudentClotheIsNotClean = {}
+    )
 }
