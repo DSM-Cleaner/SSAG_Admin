@@ -12,6 +12,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -20,7 +21,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.ssag.domain.clean.entity.CleanStateEntity
 import com.ssag.domain.clean.entity.StudentEntity
+import com.ssag.ssag_admin.R
 import com.ssag.ssag_admin.ui.theme.Gray200
 
 @Composable
@@ -107,6 +110,16 @@ fun CheckCleanContent(
             modifier = Modifier
                 .fillMaxWidth()
         )
+        CheckCleanCardView {
+            checkCleanState.cleanState.students.forEach {
+                CheckCleanStudentRow(
+                    student = it,
+                    doOnBedToggleClick = {},
+                    doOnClotheToggleClick = {}
+                )
+            }
+        }
+
     }
 }
 
@@ -124,29 +137,50 @@ fun CheckCleanCardView(modifier: Modifier = Modifier, content: @Composable () ->
 }
 
 @Composable
-fun CheckCleanPersonalRow(student: StudentEntity) {
+fun CheckCleanStudentRow(
+    student: StudentEntity,
+    doOnBedToggleClick: (Boolean) -> Unit,
+    doOnClotheToggleClick: (Boolean) -> Unit
+) {
     Row(modifier = Modifier.fillMaxWidth()) {
-        PersonalInfoView(student = student)
+        StudentInfoView(student = student)
         Row(horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.fillMaxWidth()) {
 
+            CleanToggleButton(
+                isChecked = student.cleanState.beddingIsNotClean,
+                onCheckValueChange = doOnBedToggleClick
+            )
+
+            CleanToggleButton(
+                isChecked = student.cleanState.clotheIsNotClean,
+                onCheckValueChange = doOnClotheToggleClick
+            )
         }
     }
 }
 
 @Composable
-fun PersonalInfoView(student: StudentEntity) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+fun StudentInfoView(student: StudentEntity) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(10.dp)) {
         val bedPosition = student.bedPosition
         val gcn = student.gcn.toString()
         val name = student.name
         Text(
             text = bedPosition,
             color = Color.Black,
-            fontSize = 20.sp,
+            fontSize = 26.sp,
             fontWeight = FontWeight.Bold
         )
-        Text(text = gcn)
-        Text(text = name)
+        Text(text = gcn, fontSize = 12.sp)
+        Text(text = name, fontSize = 12.sp)
+    }
+}
+
+@Composable
+fun CleanToggleButton(isChecked: Boolean, onCheckValueChange: (Boolean) -> Unit) {
+    IconToggleButton(checked = isChecked, onCheckedChange = onCheckValueChange) {
+        val iconResId = if (isChecked) R.drawable.ic_check else R.drawable.ic_un_check
+        Icon(painter = painterResource(id = iconResId), contentDescription = "check_toggle")
     }
 }
 
@@ -164,8 +198,21 @@ fun CheckCleanTopBarPreview() {
 @Composable
 fun CheckCleanCardViewPreview() {
     CheckCleanCardView {
-        Text(text = "test")
-        Text(text = "cardView")
+        CheckCleanStudentRow(
+            student = StudentEntity(
+                0L,
+                "A",
+                3202,
+                "김재원",
+                CleanStateEntity(
+                    beddingIsNotClean = false,
+                    clotheIsNotClean = false,
+                    personalPlaceIsNotClean = false
+                )
+            ),
+            {},
+            {}
+        )
     }
 }
 

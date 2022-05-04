@@ -8,7 +8,17 @@ sealed class CheckCleanIntent : Intent {
     object MoveToBeforeRoom : CheckCleanIntent()
     data class MoveToRoom(val roomNumber: Int) : CheckCleanIntent()
 
-    object CheckLight : CheckCleanIntent()
-    object CheckPlug : CheckCleanIntent()
-    object CheckShoes : CheckCleanIntent()
+    object SetLightIsClean : CheckCleanIntent()
+    object SetLightIsNotClean : CheckCleanIntent()
+
+    object SetPlugIsClean : CheckCleanIntent()
+    object SetPlugIsNotClean : CheckCleanIntent()
+
+    object SetShoesAreClean : CheckCleanIntent()
+    object SetShoesAreNotClean : CheckCleanIntent()
+
+    data class SetStudentBedIsClean(val studentId: Long) : CheckCleanIntent()
+    data class SetStudentBedIsNotClean(val studentId: Long) : CheckCleanIntent()
+    data class SetStudentClotheIsClean(val studentId: Long) : CheckCleanIntent()
+    data class SetStudentClotheIsNotClean(val studentId: Long) : CheckCleanIntent()
 }
