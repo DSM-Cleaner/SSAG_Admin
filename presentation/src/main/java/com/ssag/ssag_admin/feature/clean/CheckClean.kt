@@ -128,24 +128,71 @@ fun CheckCleanContent(
                 .fillMaxWidth()
                 .padding(0.dp, 0.dp, 10.dp, 5.dp)
         )
-        CheckCleanCardView {
-            CheckCleanStudentTitle()
 
-            checkCleanState.cleanState.students.forEach { student ->
-                CheckCleanStudentRow(
-                    student = student,
-                    doOnBedToggleClick = { isChecked ->
-                        if (isChecked) doOnStudentBedIsNotClean(student.id)
-                        else doOnStudentBedIsClean(student.id)
-                    },
-                    doOnClotheToggleClick = { isChecked ->
-                        if (isChecked) doOnStudentClotheIsNotClean(student.id)
-                        else doOnStudentClotheIsClean(student.id)
-                    }
-                )
-            }
+        CheckCleanStudent(
+            checkCleanState = checkCleanState,
+            doOnStudentBedIsNotClean = doOnStudentBedIsNotClean,
+            doOnStudentBedIsClean = doOnStudentBedIsClean,
+            doOnStudentClotheIsNotClean = doOnStudentClotheIsNotClean,
+            doOnStudentClotheIsClean = doOnStudentClotheIsClean
+        )
+
+
+        Spacer(modifier = Modifier.height(15.dp))
+
+        CheckCleanRoom()
+    }
+}
+
+@Composable
+fun CheckCleanTitle(title: String) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(15.dp)
+    ) {
+        Text(title, fontWeight = FontWeight.Bold, color = Color.Black, fontSize = 18.sp)
+    }
+}
+
+@Composable
+fun CheckCleanContentText(content: String) {
+    Text(text = content, color = Blue900)
+}
+
+@Composable
+fun CheckCleanStudent(
+    checkCleanState: CheckCleanState,
+    doOnStudentBedIsNotClean: (Long) -> Unit,
+    doOnStudentBedIsClean: (Long) -> Unit,
+    doOnStudentClotheIsNotClean: (Long) -> Unit,
+    doOnStudentClotheIsClean: (Long) -> Unit
+) {
+    CheckCleanCardView {
+        CheckCleanStudentTitle()
+
+        checkCleanState.cleanState.students.forEach { student ->
+            CheckCleanStudentRow(
+                student = student,
+                doOnBedToggleClick = { isChecked ->
+                    if (isChecked) doOnStudentBedIsNotClean(student.id)
+                    else doOnStudentBedIsClean(student.id)
+                },
+                doOnClotheToggleClick = { isChecked ->
+                    if (isChecked) doOnStudentClotheIsNotClean(student.id)
+                    else doOnStudentClotheIsClean(student.id)
+                }
+            )
         }
+    }
+}
 
+@Composable
+fun CheckCleanRoom() {
+    CheckCleanCardView {
+        CheckCleanTitle("호실공통항목")
+
+        
     }
 }
 
@@ -163,8 +210,8 @@ fun CheckCleanStudentTitle() {
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(text = "침구정리", color = Blue900)
-            Text(text = "개인물품 정리", color = Blue900)
+            CheckCleanContentText("침구정리")
+            CheckCleanContentText("개인물품 정리")
         }
     }
 }
