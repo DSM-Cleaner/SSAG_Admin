@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.ssag.domain.clean.entity.CleanStateEntity
+import com.ssag.domain.clean.entity.RoomStateEntity
 import com.ssag.domain.clean.entity.StudentEntity
 import com.ssag.ssag_admin.R
 import com.ssag.ssag_admin.ui.theme.Gray200
@@ -44,17 +45,17 @@ fun CheckClean(
     ) {
         CheckCleanContent(
             checkCleanState = checkCleanState,
-            doOnStudentClotheIsClean = { studentId ->
-                checkCleanViewModel.setStudentClotheIsClean(studentId)
-            },
-            doOnStudentClotheIsNotClean = { studentId ->
-                checkCleanViewModel.setStudentClotheIsNotClean(studentId)
-            },
             doOnStudentBedIsClean = { studentId ->
                 checkCleanViewModel.setStudentBedIsClean(studentId)
             },
             doOnStudentBedIsNotClean = { studentId ->
                 checkCleanViewModel.setStudentBedIsNotClean(studentId)
+            },
+            doOnStudentClotheIsClean = { studentId ->
+                checkCleanViewModel.setStudentClotheIsClean(studentId)
+            },
+            doOnStudentClotheIsNotClean = { studentId ->
+                checkCleanViewModel.setStudentClotheIsNotClean(studentId)
             }
         )
     }
@@ -124,8 +125,11 @@ fun CheckCleanContent(
             fontSize = 13.sp,
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(0.dp, 0.dp, 0.dp, 5.dp)
         )
         CheckCleanCardView {
+            CheckCleanStudentTitle()
+
             checkCleanState.cleanState.students.forEach { student ->
                 CheckCleanStudentRow(
                     student = student,
@@ -141,6 +145,26 @@ fun CheckCleanContent(
             }
         }
 
+    }
+}
+
+@Composable
+fun CheckCleanStudentTitle() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(0.dp, 10.dp, 0.dp, 0.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Spacer(modifier = Modifier.width(60.dp))
+        Row(
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(text = "침구정리", color = MaterialTheme.colors.primaryVariant)
+            Text(text = "개인물품 정리", color = MaterialTheme.colors.primaryVariant)
+        }
     }
 }
 
@@ -188,15 +212,17 @@ fun CheckCleanStudentRow(
 fun StudentInfoView(student: StudentEntity) {
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(10.dp)) {
         val bedPosition = student.bedPosition
-        val gcn = student.gcn.toString()
-        val name = student.name
         Text(
             text = bedPosition,
             color = Color.Black,
             fontSize = 26.sp,
             fontWeight = FontWeight.Bold
         )
+
+        val gcn = student.gcn.toString()
         Text(text = gcn, fontSize = 12.sp)
+
+        val name = student.name
         Text(text = name, fontSize = 12.sp)
     }
 }
@@ -252,7 +278,39 @@ fun CheckCleanCardViewPreview() {
 @Composable
 fun CheckCleanContentPreview() {
     CheckCleanContent(
-        checkCleanState = CheckCleanState.initial(),
+        checkCleanState = CheckCleanState(
+            roomNumber = 501,
+            showSelectRoomDialog = false,
+            cleanState = RoomStateEntity(
+                lightIsNotComplete = false,
+                plugIsNotComplete = false,
+                shoesAreNotComplete = false,
+                students = listOf(
+                    StudentEntity(
+                        12,
+                        "A",
+                        3202,
+                        "김재원",
+                        CleanStateEntity(
+                            beddingIsNotClean = true,
+                            clotheIsNotClean = true,
+                            personalPlaceIsNotClean = true
+                        )
+                    ),
+                    StudentEntity(
+                        13,
+                        "B",
+                        3302,
+                        "조호원",
+                        CleanStateEntity(
+                            beddingIsNotClean = true,
+                            clotheIsNotClean = true,
+                            personalPlaceIsNotClean = true
+                        )
+                    )
+                )
+            )
+        ),
         doOnStudentBedIsClean = {},
         doOnStudentBedIsNotClean = {},
         doOnStudentClotheIsClean = {},
