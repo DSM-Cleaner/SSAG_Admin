@@ -22,6 +22,7 @@ import com.ssag.domain.clean.entity.CleanStateEntity
 import com.ssag.domain.clean.entity.RoomStateEntity
 import com.ssag.domain.clean.entity.StudentEntity
 import com.ssag.ssag_admin.R
+import com.ssag.ssag_admin.ui.theme.Blue900
 import com.ssag.ssag_admin.ui.theme.Gray200
 
 @Composable
@@ -117,7 +118,7 @@ fun CheckCleanContent(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .verticalScroll(scrollState)
-            .padding(12.dp)
+            .padding(10.dp)
     ) {
         Text(
             text = "통과되지 않은 항목을 체크해 주세요.",
@@ -125,7 +126,7 @@ fun CheckCleanContent(
             fontSize = 13.sp,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(0.dp, 0.dp, 0.dp, 5.dp)
+                .padding(0.dp, 0.dp, 10.dp, 5.dp)
         )
         CheckCleanCardView {
             CheckCleanStudentTitle()
@@ -153,17 +154,17 @@ fun CheckCleanStudentTitle() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(0.dp, 10.dp, 0.dp, 0.dp),
+            .padding(0.dp, 10.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Spacer(modifier = Modifier.width(60.dp))
+        Spacer(modifier = Modifier.width(62.dp))
         Row(
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(text = "침구정리", color = MaterialTheme.colors.primaryVariant)
-            Text(text = "개인물품 정리", color = MaterialTheme.colors.primaryVariant)
+            Text(text = "침구정리", color = Blue900)
+            Text(text = "개인물품 정리", color = Blue900)
         }
     }
 }
@@ -174,7 +175,7 @@ fun CheckCleanCardView(modifier: Modifier = Modifier, content: @Composable () ->
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
             .fillMaxWidth()
-            .padding(12.dp, 0.dp)
+            .padding(10.dp, 0.dp)
             .border(1.dp, Gray200, RoundedCornerShape(5.dp))
     ) {
         content()
@@ -236,8 +237,7 @@ fun CleanToggleButton(isChecked: Boolean, onCheckValueChange: (Boolean) -> Unit)
         val iconResId = if (isChecked) R.drawable.ic_check else R.drawable.ic_un_check
         Image(
             painter = painterResource(id = iconResId),
-            contentDescription = "check_toggle",
-            modifier = Modifier.size(33.dp)
+            contentDescription = "check_toggle"
         )
     }
 }
