@@ -6,7 +6,7 @@ import com.ssag.ssag_admin.base.State
 data class CheckCleanState(
     val roomNumber: Int,
     val showSelectRoomDialog: Boolean,
-    val cleanState: RoomStateEntity
+    val roomState: RoomStateEntity
 ) : State {
 
     companion object {

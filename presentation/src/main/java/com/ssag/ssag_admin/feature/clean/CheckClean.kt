@@ -57,6 +57,27 @@ fun CheckClean(
             },
             doOnStudentClotheIsNotClean = { studentId ->
                 checkCleanViewModel.setStudentClotheIsNotClean(studentId)
+            },
+            doOnLightValueChanged = { isNotCompleted ->
+                if (isNotCompleted) {
+                    checkCleanViewModel.setLightIsNotComplete()
+                } else {
+                    checkCleanViewModel.setLightIsComplete()
+                }
+            },
+            doOnPlugValueChanged = { isNotCompleted ->
+                if (isNotCompleted) {
+                    checkCleanViewModel.setPlugIsNotComplete()
+                } else {
+                    checkCleanViewModel.setPlugIsComplete()
+                }
+            },
+            doOnShoesValueChanged = { isNotCompleted ->
+                if (isNotCompleted) {
+                    checkCleanViewModel.setShoesAreNotComplete()
+                } else {
+                    checkCleanViewModel.setShoesAreComplete()
+                }
             }
         )
     }
@@ -111,7 +132,10 @@ fun CheckCleanContent(
     doOnStudentBedIsNotClean: (Long) -> Unit,
     doOnStudentBedIsClean: (Long) -> Unit,
     doOnStudentClotheIsNotClean: (Long) -> Unit,
-    doOnStudentClotheIsClean: (Long) -> Unit
+    doOnStudentClotheIsClean: (Long) -> Unit,
+    doOnLightValueChanged: (Boolean) -> Unit,
+    doOnPlugValueChanged: (Boolean) -> Unit,
+    doOnShoesValueChanged: (Boolean) -> Unit
 ) {
     val scrollState = rememberScrollState()
     Column(
@@ -140,7 +164,12 @@ fun CheckCleanContent(
 
         Spacer(modifier = Modifier.height(15.dp))
 
-        CheckCleanRoom()
+        CheckCleanRoom(
+            roomState = checkCleanState.roomState,
+            doOnLightValueChanged = doOnLightValueChanged,
+            doOnPlugValueChanged = doOnPlugValueChanged,
+            doOnShoesValueChanged = doOnShoesValueChanged
+        )
     }
 }
 
@@ -157,7 +186,7 @@ fun CheckCleanTitle(title: String) {
 
 @Composable
 fun CheckCleanContentText(content: String) {
-    Text(text = content, color = Blue900)
+    Text(text = content, color = Blue900, fontWeight = FontWeight.SemiBold)
 }
 
 @Composable
@@ -171,7 +200,7 @@ fun CheckCleanStudent(
     CheckCleanCardView {
         CheckCleanStudentTitle()
 
-        checkCleanState.cleanState.students.forEach { student ->
+        checkCleanState.roomState.students.forEach { student ->
             CheckCleanStudentRow(
                 student = student,
                 doOnBedToggleClick = { isChecked ->
@@ -188,11 +217,47 @@ fun CheckCleanStudent(
 }
 
 @Composable
-fun CheckCleanRoom() {
+fun CheckCleanRoom(
+    roomState: RoomStateEntity,
+    doOnLightValueChanged: (Boolean) -> Unit,
+    doOnPlugValueChanged: (Boolean) -> Unit,
+    doOnShoesValueChanged: (Boolean) -> Unit
+) {
     CheckCleanCardView {
         CheckCleanTitle("호실공통항목")
 
-        
+        CheckCleanRoomRow(
+            title = "호실 내 소등하기",
+            isChecked = roomState.lightIsNotComplete,
+            doOnValueChange = doOnLightValueChanged
+        )
+
+        CheckCleanRoomRow(
+            title = "전기 콘센트 뽑기",
+            isChecked = roomState.plugIsNotComplete,
+            doOnValueChange = doOnPlugValueChanged
+        )
+
+        CheckCleanRoomRow(
+            title = "바닥 정리 / 신발 정리",
+            isChecked = roomState.shoesAreNotComplete,
+            doOnValueChange = doOnShoesValueChanged
+        )
+    }
+}
+
+@Composable
+fun CheckCleanRoomRow(title: String, isChecked: Boolean, doOnValueChange: (Boolean) -> Unit) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(15.dp)
+    ) {
+        CheckCleanContentText(title)
+
+        CleanToggleButton(isChecked = isChecked, onCheckValueChange = doOnValueChange)
     }
 }
 
@@ -328,7 +393,7 @@ fun CheckCleanContentPreview() {
         checkCleanState = CheckCleanState(
             roomNumber = 501,
             showSelectRoomDialog = false,
-            cleanState = RoomStateEntity(
+            roomState = RoomStateEntity(
                 lightIsNotComplete = false,
                 plugIsNotComplete = false,
                 shoesAreNotComplete = false,
@@ -361,6 +426,9 @@ fun CheckCleanContentPreview() {
         doOnStudentBedIsClean = {},
         doOnStudentBedIsNotClean = {},
         doOnStudentClotheIsClean = {},
-        doOnStudentClotheIsNotClean = {}
+        doOnStudentClotheIsNotClean = {},
+        doOnShoesValueChanged = {},
+        doOnPlugValueChanged = {},
+        doOnLightValueChanged = {}
     )
 }
