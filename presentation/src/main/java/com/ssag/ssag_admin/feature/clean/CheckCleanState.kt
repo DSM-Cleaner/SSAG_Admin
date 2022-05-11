@@ -7,7 +7,8 @@ data class CheckCleanState(
     val roomNumber: Int,
     val showSelectRoomDialog: Boolean,
     val roomState: RoomStateEntity,
-    val isPersonalCheckDay: Boolean
+    val isPersonalCheckDay: Boolean,
+    val isManTeacher: Boolean
 ) : State {
 
     companion object {
@@ -17,6 +18,7 @@ data class CheckCleanState(
                 roomNumber = 0,
                 showSelectRoomDialog = false,
                 isPersonalCheckDay = false,
+                isManTeacher = true,
                 roomState = RoomStateEntity(
                     lightIsNotComplete = false,
                     plugIsNotComplete = false,
