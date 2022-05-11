@@ -69,6 +69,14 @@ class CheckCleanViewModel @Inject constructor(
         sendIntent(CheckCleanIntent.SetStudentClotheIsNotClean(id))
     }
 
+    fun setPersonalPlaceIsComplete(id: Long) {
+        sendIntent(CheckCleanIntent.SetPersonalPlaceIsComplete(id))
+    }
+
+    fun setPersonalPlaceIsNotComplete(id: Long) {
+        sendIntent(CheckCleanIntent.SetPersonalPlaceIsNotComplete(id))
+    }
+
     override fun reduceIntent(oldState: CheckCleanState, intent: CheckCleanIntent) {
         when (intent) {
             is CheckCleanIntent.MoveToBeforeRoom -> TODO()
@@ -188,6 +196,39 @@ class CheckCleanViewModel @Inject constructor(
                 setState(
                     oldState.copy(
                         isPersonalCheckDay = true
+                    )
+                )
+            }
+
+            is CheckCleanIntent.SetPersonalPlaceIsComplete -> {
+                setState(
+                    oldState.copy(
+                        roomState = oldState.roomState.copy(
+                            students = oldState.roomState.students.map { oldStateStudent ->
+                                if (oldStateStudent.id == intent.studentId) oldStateStudent.copy(
+                                    cleanState = oldStateStudent.cleanState.copy(
+                                        personalPlaceIsNotClean = false
+                                    )
+                                )
+                                else oldStateStudent
+                            }
+                        )
+                    )
+                )
+            }
+            is CheckCleanIntent.SetPersonalPlaceIsNotComplete -> {
+                setState(
+                    oldState.copy(
+                        roomState = oldState.roomState.copy(
+                            students = oldState.roomState.students.map { oldStateStudent ->
+                                if (oldStateStudent.id == intent.studentId) oldStateStudent.copy(
+                                    cleanState = oldStateStudent.cleanState.copy(
+                                        personalPlaceIsNotClean = true
+                                    )
+                                )
+                                else oldStateStudent
+                            }
+                        )
                     )
                 )
             }

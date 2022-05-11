@@ -24,4 +24,7 @@ sealed class CheckCleanIntent : Intent {
     data class SetStudentBedIsNotClean(val studentId: Long) : CheckCleanIntent()
     data class SetStudentClotheIsClean(val studentId: Long) : CheckCleanIntent()
     data class SetStudentClotheIsNotClean(val studentId: Long) : CheckCleanIntent()
+
+    data class SetPersonalPlaceIsNotComplete(val studentId: Long) : CheckCleanIntent()
+    data class SetPersonalPlaceIsComplete(val studentId: Long) : CheckCleanIntent()
 }

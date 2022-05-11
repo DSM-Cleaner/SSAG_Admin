@@ -25,7 +25,6 @@ import com.ssag.domain.clean.entity.StudentEntity
 import com.ssag.ssag_admin.R
 import com.ssag.ssag_admin.ui.theme.Blue900
 import com.ssag.ssag_admin.ui.theme.Gray200
-import org.threeten.bp.LocalDate
 
 @Composable
 fun CheckClean(
@@ -86,10 +85,10 @@ fun CheckClean(
                 }
             },
             doOnPersonalPlaceNotCompleted = { studentId ->
-
+                checkCleanViewModel.setPersonalPlaceIsNotComplete(studentId)
             },
             doOnPersonalPlaceCompleted = { studentId ->
-
+                checkCleanViewModel.setPersonalPlaceIsComplete(studentId)
             }
         )
     }
