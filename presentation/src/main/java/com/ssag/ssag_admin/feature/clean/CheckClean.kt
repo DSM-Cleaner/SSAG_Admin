@@ -29,15 +29,22 @@ import com.ssag.ssag_admin.ui.theme.Gray200
 @Composable
 fun CheckClean(
     navController: NavController,
-    checkCleanViewModel: CheckCleanViewModel = hiltViewModel()
+    checkCleanViewModel: CheckCleanViewModel = hiltViewModel(),
+    isManTeacher: Boolean
 ) {
     val checkCleanState = checkCleanViewModel.state.collectAsState().value
 
     val scaffoldState = rememberScaffoldState()
 
     LaunchedEffect(Unit) {
-        checkCleanViewModel.checkDayIsPersonalCheckDay()
+        checkCleanViewModel.run {
+            checkDayIsPersonalCheckDay()
+            setTeacherGender(isManTeacher)
+        }
+    }
 
+    LaunchedEffect(checkCleanState.isManTeacher) {
+        checkCleanViewModel.setStartRoom()
     }
 
     LaunchedEffect(key1 = checkCleanState.roomNumber) {

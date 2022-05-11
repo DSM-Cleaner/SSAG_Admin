@@ -30,9 +30,15 @@ class CheckCleanViewModel @Inject constructor(
 
     }
 
-    
+    fun setTeacherGender(isMan: Boolean) {
+        if(isMan) {
+            sendIntent(CheckCleanIntent.SetTeacherIsMan)
+        } else {
+            sendIntent(CheckCleanIntent.SetTeacherIsWoman)
+        }
+    }
 
-    private fun setStartRoom() {
+    fun setStartRoom() {
         sendIntent(CheckCleanIntent.MoveToRoom(rooms[roomIndex]))
     }
 
@@ -277,6 +283,21 @@ class CheckCleanViewModel @Inject constructor(
                                 else oldStateStudent
                             }
                         )
+                    )
+                )
+            }
+
+            is CheckCleanIntent.SetTeacherIsMan -> {
+                setState(
+                    oldState.copy(
+                        isManTeacher = true
+                    )
+                )
+            }
+            is CheckCleanIntent.SetTeacherIsWoman -> {
+                setState(
+                    oldState.copy(
+                        isManTeacher = false
                     )
                 )
             }

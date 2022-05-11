@@ -11,6 +11,9 @@ sealed class CheckCleanIntent : Intent {
     object SetDayIsPersonalCheckDay : CheckCleanIntent()
     object SetDayIsNotPersonalCheckDay : CheckCleanIntent()
 
+    object SetTeacherIsMan : CheckCleanIntent()
+    object SetTeacherIsWoman : CheckCleanIntent()
+
     object SetLightIsComplete : CheckCleanIntent()
     object SetLightIsNotComplete : CheckCleanIntent()
 
