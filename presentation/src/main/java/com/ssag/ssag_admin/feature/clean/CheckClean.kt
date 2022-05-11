@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,6 +25,7 @@ import com.ssag.domain.clean.entity.StudentEntity
 import com.ssag.ssag_admin.R
 import com.ssag.ssag_admin.ui.theme.Blue900
 import com.ssag.ssag_admin.ui.theme.Gray200
+import org.threeten.bp.LocalDate
 
 @Composable
 fun CheckClean(
@@ -33,6 +35,10 @@ fun CheckClean(
     val checkCleanState = checkCleanViewModel.state.collectAsState().value
 
     val scaffoldState = rememberScaffoldState()
+
+    LaunchedEffect(key1 = checkCleanState.roomNumber) {
+        checkCleanViewModel.fetchCleanState()
+    }
 
     Scaffold(
         scaffoldState = scaffoldState,
@@ -78,6 +84,12 @@ fun CheckClean(
                 } else {
                     checkCleanViewModel.setShoesAreComplete()
                 }
+            },
+            doOnPersonalPlaceNotCompleted = { studentId ->
+
+            },
+            doOnPersonalPlaceCompleted = { studentId ->
+
             }
         )
     }
@@ -135,7 +147,9 @@ fun CheckCleanContent(
     doOnStudentClotheIsClean: (Long) -> Unit,
     doOnLightValueChanged: (Boolean) -> Unit,
     doOnPlugValueChanged: (Boolean) -> Unit,
-    doOnShoesValueChanged: (Boolean) -> Unit
+    doOnShoesValueChanged: (Boolean) -> Unit,
+    doOnPersonalPlaceNotCompleted: (Long) -> Unit,
+    doOnPersonalPlaceCompleted: (Long) -> Unit
 ) {
     val scrollState = rememberScrollState()
     Column(
@@ -170,6 +184,16 @@ fun CheckCleanContent(
             doOnPlugValueChanged = doOnPlugValueChanged,
             doOnShoesValueChanged = doOnShoesValueChanged
         )
+
+        Spacer(modifier = Modifier.height(15.dp))
+
+        if (checkCleanState.isPersonalCheckDay) {
+            CheckCleanPersonalSpace(
+                students = checkCleanState.roomState.students,
+                doOnPersonalPlaceCompleted = doOnPersonalPlaceCompleted,
+                doOnPersonalPlaceNotCompleted = doOnPersonalPlaceNotCompleted
+            )
+        }
     }
 }
 
@@ -282,10 +306,10 @@ fun CheckCleanStudentTitle() {
 }
 
 @Composable
-fun CheckCleanCardView(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
+fun CheckCleanCardView(content: @Composable () -> Unit) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier
+        modifier = Modifier
             .fillMaxWidth()
             .padding(10.dp, 0.dp)
             .border(1.dp, Gray200, RoundedCornerShape(5.dp))
@@ -318,6 +342,50 @@ fun CheckCleanStudentRow(
                 onCheckValueChange = doOnClotheToggleClick
             )
         }
+    }
+}
+
+@Composable
+fun CheckCleanPersonalSpace(
+    students: List<StudentEntity>,
+    doOnPersonalPlaceCompleted: (Long) -> Unit,
+    doOnPersonalPlaceNotCompleted: (Long) -> Unit
+) {
+    CheckCleanCardView {
+        CheckCleanTitle("개인별 청소구역")
+
+        students.forEach { student ->
+            CheckCleanPersonalRow(
+                student = student,
+                isChecked = student.cleanState.personalPlaceIsNotClean ?: false,
+                doOnValueChange = { isChecked ->
+                    if (isChecked) {
+                        doOnPersonalPlaceNotCompleted(student.id)
+                    } else {
+                        doOnPersonalPlaceCompleted(student.id)
+                    }
+                }
+            )
+        }
+    }
+}
+
+@Composable
+fun CheckCleanPersonalRow(
+    student: StudentEntity,
+    isChecked: Boolean,
+    doOnValueChange: (Boolean) -> Unit
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(15.dp)
+    ) {
+        StudentInfoView(student = student)
+
+        CleanToggleButton(isChecked = isChecked, onCheckValueChange = doOnValueChange)
     }
 }
 
@@ -421,7 +489,8 @@ fun CheckCleanContentPreview() {
                         )
                     )
                 )
-            )
+            ),
+            isPersonalCheckDay = true
         ),
         doOnStudentBedIsClean = {},
         doOnStudentBedIsNotClean = {},
@@ -429,6 +498,8 @@ fun CheckCleanContentPreview() {
         doOnStudentClotheIsNotClean = {},
         doOnShoesValueChanged = {},
         doOnPlugValueChanged = {},
-        doOnLightValueChanged = {}
+        doOnLightValueChanged = {},
+        doOnPersonalPlaceNotCompleted = {},
+        doOnPersonalPlaceCompleted = {}
     )
 }

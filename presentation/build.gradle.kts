@@ -69,4 +69,6 @@ dependencies {
     implementation(Dependency.Network.gsonConverter)
     implementation(Dependency.Network.okhttp)
     implementation(Dependency.Network.loggingInterceptor)
+
+    implementation(Dependency.ThreeTenAndroidBackport.threeTenAbp)
 }

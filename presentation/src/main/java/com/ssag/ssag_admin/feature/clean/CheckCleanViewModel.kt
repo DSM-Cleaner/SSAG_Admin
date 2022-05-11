@@ -3,6 +3,7 @@ package com.ssag.ssag_admin.feature.clean
 import com.ssag.ssag_admin.base.BaseViewModel
 import com.ssag.ssag_admin.base.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
+import org.threeten.bp.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
@@ -12,6 +13,21 @@ class CheckCleanViewModel @Inject constructor(
 
     override val initialState: CheckCleanState
         get() = CheckCleanState.initial()
+
+    suspend fun fetchCleanState() {
+        checkDayIsPersonalCheckDay()
+    }
+
+    private fun checkDayIsPersonalCheckDay() {
+        if (LocalDate.now().isPersonalCheckDay()) {
+            sendIntent(CheckCleanIntent.SetDayIsPersonalCheckDay)
+        } else {
+            sendIntent(CheckCleanIntent.SetDayIsNotPersonalCheckDay)
+        }
+    }
+
+    private fun LocalDate.isPersonalCheckDay() =
+        this.dayOfWeek.value == 5 || this.dayOfWeek.value == 3
 
     fun setLightIsComplete() {
         sendIntent(CheckCleanIntent.SetLightIsComplete)
@@ -161,6 +177,20 @@ class CheckCleanViewModel @Inject constructor(
                 )
             }
 
+            is CheckCleanIntent.SetDayIsNotPersonalCheckDay -> {
+                setState(
+                    oldState.copy(
+                        isPersonalCheckDay = false
+                    )
+                )
+            }
+            is CheckCleanIntent.SetDayIsPersonalCheckDay -> {
+                setState(
+                    oldState.copy(
+                        isPersonalCheckDay = true
+                    )
+                )
+            }
         }
     }
 

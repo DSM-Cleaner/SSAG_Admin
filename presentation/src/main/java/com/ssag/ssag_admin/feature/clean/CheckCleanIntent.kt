@@ -8,6 +8,9 @@ sealed class CheckCleanIntent : Intent {
     object MoveToBeforeRoom : CheckCleanIntent()
     data class MoveToRoom(val roomNumber: Int) : CheckCleanIntent()
 
+    object SetDayIsPersonalCheckDay : CheckCleanIntent()
+    object SetDayIsNotPersonalCheckDay : CheckCleanIntent()
+
     object SetLightIsComplete : CheckCleanIntent()
     object SetLightIsNotComplete : CheckCleanIntent()
 

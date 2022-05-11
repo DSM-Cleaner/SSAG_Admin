@@ -24,4 +24,5 @@ object Version {
 
     const val dataStore = "1.0.0"
 
+    const val threeTenAbp = "1.3.1"
 }
