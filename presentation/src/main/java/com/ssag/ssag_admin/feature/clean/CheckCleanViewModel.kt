@@ -14,11 +14,29 @@ class CheckCleanViewModel @Inject constructor(
     override val initialState: CheckCleanState
         get() = CheckCleanState.initial()
 
+    private val secondFloorRooms = 201..223
+    private val thirdFloorRooms = 323 downTo 301
+
+    private val fourthFloorRooms = 423 downTo 401
+    private val fifthFloorRooms = 501..523
+
+    private var roomIndex = 0
+
+    private val rooms =
+        if (state.value.isManTeacher) fifthFloorRooms + fourthFloorRooms + thirdFloorRooms + secondFloorRooms
+        else secondFloorRooms + thirdFloorRooms + fourthFloorRooms + fifthFloorRooms
+
     suspend fun fetchCleanState() {
-        checkDayIsPersonalCheckDay()
+
     }
 
-    private fun checkDayIsPersonalCheckDay() {
+    
+
+    private fun setStartRoom() {
+        sendIntent(CheckCleanIntent.MoveToRoom(rooms[roomIndex]))
+    }
+
+    fun checkDayIsPersonalCheckDay() {
         if (LocalDate.now().isPersonalCheckDay()) {
             sendIntent(CheckCleanIntent.SetDayIsPersonalCheckDay)
         } else {
@@ -79,9 +97,39 @@ class CheckCleanViewModel @Inject constructor(
 
     override fun reduceIntent(oldState: CheckCleanState, intent: CheckCleanIntent) {
         when (intent) {
-            is CheckCleanIntent.MoveToBeforeRoom -> TODO()
-            is CheckCleanIntent.MoveToNextRoom -> TODO()
-            is CheckCleanIntent.MoveToRoom -> TODO()
+            is CheckCleanIntent.MoveToBeforeRoom -> {
+                if (roomIndex > 0) {
+                    roomIndex -= 1
+                    val beforeRoom = if (roomIndex > 0) rooms[roomIndex - 1] else 0
+                    setState(
+                        oldState.copy(
+                            roomNumber = rooms[roomIndex],
+                            beforeRoomNumber = beforeRoom,
+                            nextRoomNumber = rooms[roomIndex + 1]
+                        )
+                    )
+                }
+            }
+            is CheckCleanIntent.MoveToNextRoom -> {
+                if (roomIndex < rooms.size - 1) {
+                    roomIndex += 1
+                    val nextRoom = if (roomIndex < rooms.size - 1) rooms[roomIndex + 1] else 0
+                    setState(
+                        oldState.copy(
+                            roomNumber = rooms[roomIndex],
+                            beforeRoomNumber = rooms[roomIndex - 1],
+                            nextRoomNumber = nextRoom
+                        )
+                    )
+                }
+            }
+            is CheckCleanIntent.MoveToRoom -> {
+                setState(
+                    oldState.copy(
+                        roomNumber = intent.roomNumber
+                    )
+                )
+            }
 
             is CheckCleanIntent.SetLightIsComplete -> {
                 setState(

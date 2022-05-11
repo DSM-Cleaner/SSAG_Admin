@@ -35,6 +35,11 @@ fun CheckClean(
 
     val scaffoldState = rememberScaffoldState()
 
+    LaunchedEffect(Unit) {
+        checkCleanViewModel.checkDayIsPersonalCheckDay()
+
+    }
+
     LaunchedEffect(key1 = checkCleanState.roomNumber) {
         checkCleanViewModel.fetchCleanState()
     }
@@ -489,7 +494,10 @@ fun CheckCleanContentPreview() {
                     )
                 )
             ),
-            isPersonalCheckDay = true
+            isPersonalCheckDay = true,
+            isManTeacher = true,
+            nextRoomNumber = 0,
+            beforeRoomNumber = 0
         ),
         doOnStudentBedIsClean = {},
         doOnStudentBedIsNotClean = {},
