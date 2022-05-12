@@ -209,6 +209,11 @@ fun CheckCleanContent(
 }
 
 @Composable
+fun SelectRoomDialog(roomNumber: Int) {
+
+}
+
+@Composable
 fun CheckCleanTitle(title: String) {
     Box(
         modifier = Modifier
