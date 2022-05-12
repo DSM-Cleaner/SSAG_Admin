@@ -55,4 +55,8 @@ object Dependency {
         const val dataStore = "androidx.datastore:datastore:${Version.dataStore}"
         const val dataStorePreference = "androidx.datastore:datastore-preferences:${Version.dataStore}"
     }
+
+    object ThreeTenAndroidBackport {
+        const val threeTenAbp = "com.jakewharton.threetenabp:threetenabp:${Version.threeTenAbp}"
+    }
 }

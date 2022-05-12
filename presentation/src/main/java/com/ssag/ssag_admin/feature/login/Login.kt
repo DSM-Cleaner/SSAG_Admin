@@ -54,7 +54,7 @@ fun Login(navController: NavController, loginViewModel: LoginViewModel = hiltVie
                 }
             },
             doOnStartCheckClick = {
-                navController.navigate(AppNavigationItem.CheckClean.route)
+                navController.navigate(AppNavigationItem.CheckClean.route + "/${loginState.isManTeacher}")
             },
             doOnChangePasswordClick = {
                 navController.navigate(AppNavigationItem.ChangePassword.route)
@@ -337,7 +337,8 @@ fun LoginContentPreview() {
         loginState = LoginState(
             true,
             "박창수",
-            false,
+            isManTeacher = false,
+            isLoading = false,
             5,
             ""
         ),
@@ -357,7 +358,8 @@ fun StartCleanLayoutPreview() {
         loginState = LoginState(
             true,
             "박창수",
-            false,
+            isManTeacher = false,
+            isLoading = false,
             5,
             ""
         ),

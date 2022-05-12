@@ -44,22 +44,9 @@ fun ChangePassword(
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = {
-            TopAppBar(
-                title = { Text(text = "비밀번호 변경") },
-                navigationIcon = {
-                    IconButton(onClick = {
-                        navController.popBackStack()
-                    }) {
-                        Icon(Icons.Filled.ArrowBack, "back")
-                    }
-                },
-                backgroundColor = MaterialTheme.colors.primaryVariant,
-                contentColor = Color.White,
-                elevation = 12.dp
-            )
+            ChangePasswordTopBarContent(navController = navController)
         }
     ) {
-
         ChangePasswordContent(
             state = changePasswordState,
             doOnChangePasswordClick = {
@@ -98,6 +85,23 @@ fun ChangePassword(
             }
         }
     }
+}
+
+@Composable
+fun ChangePasswordTopBarContent(navController: NavController) {
+    TopAppBar(
+        title = { Text(text = "비밀번호 변경") },
+        navigationIcon = {
+            IconButton(onClick = {
+                navController.popBackStack()
+            }) {
+                Icon(Icons.Filled.ArrowBack, "back")
+            }
+        },
+        backgroundColor = MaterialTheme.colors.primaryVariant,
+        contentColor = Color.White,
+        elevation = 12.dp
+    )
 }
 
 @Composable
