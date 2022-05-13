@@ -1,5 +1,6 @@
 package com.ssag.ssag_admin.feature.clean
 
+import com.ssag.domain.clean.usecase.FetchRoomStateUseCase
 import com.ssag.ssag_admin.base.BaseViewModel
 import com.ssag.ssag_admin.base.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -8,7 +9,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CheckCleanViewModel @Inject constructor(
-
+    private val fetchRoomStateUseCase: FetchRoomStateUseCase
 ) : BaseViewModel<CheckCleanState, CheckCleanIntent, CheckCleanViewModel.CheckCleanEvent>() {
 
     override val initialState: CheckCleanState
@@ -27,11 +28,12 @@ class CheckCleanViewModel @Inject constructor(
         else secondFloorRooms + thirdFloorRooms + fourthFloorRooms + fifthFloorRooms
 
     suspend fun fetchCleanState() {
-
+        val roomState = fetchRoomStateUseCase.execute(state.value.roomNumber)
+        sendIntent(CheckCleanIntent.SetRoomState(roomState))
     }
 
     fun setTeacherGender(isMan: Boolean) {
-        if(isMan) {
+        if (isMan) {
             sendIntent(CheckCleanIntent.SetTeacherIsMan)
         } else {
             sendIntent(CheckCleanIntent.SetTeacherIsWoman)
@@ -103,6 +105,14 @@ class CheckCleanViewModel @Inject constructor(
 
     override fun reduceIntent(oldState: CheckCleanState, intent: CheckCleanIntent) {
         when (intent) {
+            is CheckCleanIntent.SetRoomState -> {
+                setState(
+                    oldState.copy(
+                        roomState = intent.roomState
+                    )
+                )
+            }
+
             is CheckCleanIntent.MoveToBeforeRoom -> {
                 if (roomIndex > 0) {
                     roomIndex -= 1
@@ -304,7 +314,5 @@ class CheckCleanViewModel @Inject constructor(
         }
     }
 
-    sealed class CheckCleanEvent : Event {
-
-    }
+    sealed class CheckCleanEvent : Event
 }
