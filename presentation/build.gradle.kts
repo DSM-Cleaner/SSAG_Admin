@@ -57,6 +57,7 @@ dependencies {
     implementation(Dependency.UI.composeMaterial)
     implementation(Dependency.UI.composePreview)
     implementation(Dependency.UI.activityCompose)
+    implementation(Dependency.UI.composeNumberPicker)
     debugImplementation(Dependency.UI.composeTooling)
 
     implementation(Dependency.DI.hiltAndroid)
