@@ -40,6 +40,9 @@ class CheckCleanViewModel @Inject constructor(
         }
     }
 
+    fun fetchRooms(): List<Int> =
+        rooms
+
     fun setStartRoom() {
         sendIntent(CheckCleanIntent.MoveToRoom(rooms[roomIndex]))
     }

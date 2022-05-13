@@ -17,8 +17,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.chargemap.compose.numberpicker.NumberPicker
 import com.ssag.domain.clean.entity.CleanStateEntity
 import com.ssag.domain.clean.entity.RoomStateEntity
 import com.ssag.domain.clean.entity.StudentEntity
@@ -101,6 +103,13 @@ fun CheckClean(
             },
             doOnPersonalPlaceCompleted = { studentId ->
                 checkCleanViewModel.setPersonalPlaceIsComplete(studentId)
+            },
+            rooms = checkCleanViewModel.fetchRooms(),
+            doOnRoomSelect = { room ->
+                checkCleanViewModel
+            },
+            doOnSelectRoomDialogDismiss = {
+
             }
         )
     }
@@ -152,6 +161,7 @@ fun CheckCleanTopBarContent(
 @Composable
 fun CheckCleanContent(
     checkCleanState: CheckCleanState,
+    rooms: List<Int>,
     doOnStudentBedIsNotClean: (Long) -> Unit,
     doOnStudentBedIsClean: (Long) -> Unit,
     doOnStudentClotheIsNotClean: (Long) -> Unit,
@@ -160,7 +170,9 @@ fun CheckCleanContent(
     doOnPlugValueChanged: (Boolean) -> Unit,
     doOnShoesValueChanged: (Boolean) -> Unit,
     doOnPersonalPlaceNotCompleted: (Long) -> Unit,
-    doOnPersonalPlaceCompleted: (Long) -> Unit
+    doOnPersonalPlaceCompleted: (Long) -> Unit,
+    doOnRoomSelect: (Int) -> Unit,
+    doOnSelectRoomDialogDismiss: () -> Unit
 ) {
     val scrollState = rememberScrollState()
     Column(
@@ -205,12 +217,37 @@ fun CheckCleanContent(
                 doOnPersonalPlaceNotCompleted = doOnPersonalPlaceNotCompleted
             )
         }
+
+        if (checkCleanState.showSelectRoomDialog) {
+            SelectRoomDialog(
+                roomNumber = checkCleanState.roomNumber,
+                roomRange = rooms,
+                doOnRoomSelect = doOnRoomSelect,
+                doOnSelectRoomDialogDismiss = doOnSelectRoomDialogDismiss
+            )
+        }
     }
 }
 
 @Composable
-fun SelectRoomDialog(roomNumber: Int) {
-
+fun SelectRoomDialog(
+    roomNumber: Int,
+    roomRange: List<Int>,
+    doOnRoomSelect: (Int) -> Unit,
+    doOnSelectRoomDialogDismiss: () -> Unit
+) {
+    Surface(
+        modifier = Modifier
+            .width(220.dp),
+        color = MaterialTheme.colors.surface,
+        shape = RoundedCornerShape(15.dp)
+    ) {
+        Column {
+            Dialog(onDismissRequest = doOnSelectRoomDialogDismiss) {
+                NumberPicker(value = roomNumber, onValueChange = doOnRoomSelect, range = roomRange)
+            }
+        }
+    }
 }
 
 @Composable
@@ -519,6 +556,9 @@ fun CheckCleanContentPreview() {
         doOnPlugValueChanged = {},
         doOnLightValueChanged = {},
         doOnPersonalPlaceNotCompleted = {},
-        doOnPersonalPlaceCompleted = {}
+        doOnPersonalPlaceCompleted = {},
+        doOnSelectRoomDialogDismiss = {},
+        doOnRoomSelect = {},
+        rooms = emptyList()
     )
 }
