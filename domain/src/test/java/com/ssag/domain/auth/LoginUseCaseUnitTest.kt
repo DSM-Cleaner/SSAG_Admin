@@ -21,11 +21,11 @@ class LoginUseCaseUnitTest {
 
         val password = "password"
 
-        whenever(authRepository.login(password)).thenReturn(
-            teacherEntity
-        )
-
         runBlocking {
+            whenever(authRepository.login(password)).thenReturn(
+                teacherEntity
+            )
+
             val result = loginUseCase.execute(password)
             assertEquals(result, teacherEntity)
         }

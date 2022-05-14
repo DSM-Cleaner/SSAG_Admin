@@ -25,9 +25,12 @@ import com.ssag.domain.clean.entity.CleanStateEntity
 import com.ssag.domain.clean.entity.RoomStateEntity
 import com.ssag.domain.clean.entity.StudentEntity
 import com.ssag.ssag_admin.R
+import com.ssag.ssag_admin.base.observeWithLifecycle
 import com.ssag.ssag_admin.ui.theme.Blue900
 import com.ssag.ssag_admin.ui.theme.Gray200
+import kotlinx.coroutines.InternalCoroutinesApi
 
+@OptIn(InternalCoroutinesApi::class)
 @Composable
 fun CheckClean(
     navController: NavController,
@@ -58,7 +61,7 @@ fun CheckClean(
         topBar = {
             CheckCleanTopBarContent(
                 checkCleanState = checkCleanState,
-                doOnSelectRoomClick = { },
+                doOnSelectRoomClick = { checkCleanViewModel.showSelectRoomDialog() },
                 doOnCompleteClick = { navController.popBackStack() }
             )
         }
@@ -106,12 +109,20 @@ fun CheckClean(
             },
             rooms = checkCleanViewModel.fetchRooms(),
             doOnRoomSelect = { room ->
-                checkCleanViewModel
+                checkCleanViewModel.moveToRoom(room)
             },
             doOnSelectRoomDialogDismiss = {
-
+                checkCleanViewModel.dismissSelectRoomDialog()
             }
         )
+    }
+
+    checkCleanViewModel.event.observeWithLifecycle {
+        when (it) {
+            is CheckCleanViewModel.CheckCleanEvent.FailToReadRoomState -> {
+                scaffoldState.snackbarHostState.showSnackbar("호실정보를 읽어오지 못하였습니다.")
+            }
+        }
     }
 }
 

@@ -11,6 +11,9 @@ sealed class CheckCleanIntent : Intent {
     object MoveToBeforeRoom : CheckCleanIntent()
     data class MoveToRoom(val roomNumber: Int) : CheckCleanIntent()
 
+    object ShowSelectRoomDialog : CheckCleanIntent()
+    object DismissSelectRoomDialog : CheckCleanIntent()
+
     object SetDayIsPersonalCheckDay : CheckCleanIntent()
     object SetDayIsNotPersonalCheckDay : CheckCleanIntent()
 

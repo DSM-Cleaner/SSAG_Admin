@@ -1,7 +1,9 @@
 package com.ssag.ssag_admin.di
 
 import com.ssag.data.repository.AuthRepositoryImpl
+import com.ssag.data.repository.CleanRepositoryImpl
 import com.ssag.domain.auth.repository.AuthRepository
+import com.ssag.domain.clean.repository.CleanRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -15,4 +17,9 @@ abstract class RepositoryModule {
     abstract fun provideAuthRepository(
         authRepositoryImpl: AuthRepositoryImpl
     ): AuthRepository
+
+    @Binds
+    abstract fun provideCleanRepository(
+        cleanRepositoryImpl: CleanRepositoryImpl
+    ): CleanRepository
 }

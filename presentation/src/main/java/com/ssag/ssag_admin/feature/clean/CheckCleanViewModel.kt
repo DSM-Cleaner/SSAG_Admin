@@ -28,8 +28,13 @@ class CheckCleanViewModel @Inject constructor(
         else secondFloorRooms + thirdFloorRooms + fourthFloorRooms + fifthFloorRooms
 
     suspend fun fetchCleanState() {
-        val roomState = fetchRoomStateUseCase.execute(state.value.roomNumber)
-        sendIntent(CheckCleanIntent.SetRoomState(roomState))
+        kotlin.runCatching {
+            fetchRoomStateUseCase.execute(state.value.roomNumber)
+        }.onSuccess { roomState ->
+            sendIntent(CheckCleanIntent.SetRoomState(roomState))
+        }.onFailure {
+            sendEvent(CheckCleanEvent.FailToReadRoomState)
+        }
     }
 
     fun setTeacherGender(isMan: Boolean) {
@@ -57,6 +62,18 @@ class CheckCleanViewModel @Inject constructor(
 
     private fun LocalDate.isPersonalCheckDay() =
         this.dayOfWeek.value == 5 || this.dayOfWeek.value == 3
+
+    fun moveToRoom(room: Int) {
+        sendIntent(CheckCleanIntent.MoveToRoom(room))
+    }
+
+    fun showSelectRoomDialog() {
+        sendIntent(CheckCleanIntent.ShowSelectRoomDialog)
+    }
+
+    fun dismissSelectRoomDialog() {
+        sendIntent(CheckCleanIntent.DismissSelectRoomDialog)
+    }
 
     fun setLightIsComplete() {
         sendIntent(CheckCleanIntent.SetLightIsComplete)
@@ -314,8 +331,24 @@ class CheckCleanViewModel @Inject constructor(
                     )
                 )
             }
+            is CheckCleanIntent.DismissSelectRoomDialog -> {
+                setState(
+                    oldState.copy(
+                        showSelectRoomDialog = false
+                    )
+                )
+            }
+            is CheckCleanIntent.ShowSelectRoomDialog -> {
+                setState(
+                    oldState.copy(
+                        showSelectRoomDialog = true
+                    )
+                )
+            }
         }
     }
 
-    sealed class CheckCleanEvent : Event
+    sealed class CheckCleanEvent : Event {
+        object FailToReadRoomState : CheckCleanEvent()
+    }
 }
