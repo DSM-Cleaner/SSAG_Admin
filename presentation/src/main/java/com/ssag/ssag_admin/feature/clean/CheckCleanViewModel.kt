@@ -48,6 +48,12 @@ class CheckCleanViewModel @Inject constructor(
     fun fetchRooms(): List<Int> =
         rooms
 
+    fun isNotFirstRoom(): Boolean =
+        roomIndex > 0
+
+    fun isNotLastRoom(): Boolean =
+        roomIndex < rooms.size - 1
+
     fun setStartRoom() {
         sendIntent(CheckCleanIntent.MoveToRoom(rooms[roomIndex]))
         sendEvent(CheckCleanEvent.DoneSetRoom)

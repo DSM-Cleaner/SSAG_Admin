@@ -29,6 +29,7 @@ import com.ssag.ssag_admin.base.observeWithLifecycle
 import com.ssag.ssag_admin.ui.theme.Blue900
 import com.ssag.ssag_admin.ui.theme.ErrorColor
 import com.ssag.ssag_admin.ui.theme.Gray200
+import com.ssag.ssag_admin.ui.theme.Purple700
 import kotlinx.coroutines.InternalCoroutinesApi
 
 @OptIn(InternalCoroutinesApi::class)
@@ -66,7 +67,32 @@ fun CheckClean(
             SnackbarHost(it) { data ->
                 Snackbar(backgroundColor = ErrorColor, snackbarData = data)
             }
-        }
+        },
+        floatingActionButton = {
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp, 0.dp)
+            ) {
+                if (checkCleanViewModel.isNotFirstRoom()) {
+                    CheckCleanMoveRoomButton(room = checkCleanState.beforeRoomNumber) {
+                        checkCleanViewModel.moveToBeforeRoom()
+                    }
+                } else {
+                    Spacer(modifier = Modifier.width(150.dp))
+                }
+
+                if (checkCleanViewModel.isNotLastRoom()) {
+                    CheckCleanMoveRoomButton(room = checkCleanState.nextRoomNumber) {
+                        checkCleanViewModel.moveToNextRoom()
+                    }
+                } else {
+                    Spacer(modifier = Modifier.width(150.dp))
+                }
+            }
+        },
+        floatingActionButtonPosition = FabPosition.Center
     ) {
         CheckCleanContent(
             checkCleanState = checkCleanState,
@@ -163,6 +189,7 @@ fun CheckCleanTopBarContent(
             Text(
                 text = "검사완료",
                 fontWeight = FontWeight.SemiBold,
+                color = Color.White,
                 modifier = Modifier
                     .clickable { doOnCompleteClick() }
                     .padding(10.dp)
@@ -509,8 +536,18 @@ fun CleanToggleButton(isChecked: Boolean, onCheckValueChange: (Boolean) -> Unit)
 }
 
 @Composable
-fun CheckCleanMoveRoomButton() {
-
+fun CheckCleanMoveRoomButton(room: Int, doOnMoveRoomButtonClick: () -> Unit) {
+    Button(
+        onClick = doOnMoveRoomButtonClick,
+        shape = RoundedCornerShape(15.dp),
+        colors = ButtonDefaults.buttonColors(
+            backgroundColor = Purple700,
+            contentColor = Color.White
+        ),
+        modifier = Modifier.size(150.dp, 40.dp)
+    ) {
+        Text(text = "$room 호")
+    }
 }
 
 @Preview
