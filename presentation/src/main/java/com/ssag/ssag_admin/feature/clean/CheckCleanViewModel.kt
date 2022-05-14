@@ -50,6 +50,7 @@ class CheckCleanViewModel @Inject constructor(
 
     fun setStartRoom() {
         sendIntent(CheckCleanIntent.MoveToRoom(rooms[roomIndex]))
+        sendEvent(CheckCleanEvent.DoneSetRoom)
     }
 
     fun checkDayIsPersonalCheckDay() {
@@ -65,6 +66,17 @@ class CheckCleanViewModel @Inject constructor(
 
     fun moveToRoom(room: Int) {
         sendIntent(CheckCleanIntent.MoveToRoom(room))
+        sendEvent(CheckCleanEvent.DoneSetRoom)
+    }
+
+    fun moveToNextRoom() {
+        sendIntent(CheckCleanIntent.MoveToNextRoom)
+        sendEvent(CheckCleanEvent.DoneSetRoom)
+    }
+
+    fun moveToBeforeRoom() {
+        sendIntent(CheckCleanIntent.MoveToBeforeRoom)
+        sendEvent(CheckCleanEvent.DoneSetRoom)
     }
 
     fun showSelectRoomDialog() {
@@ -349,6 +361,7 @@ class CheckCleanViewModel @Inject constructor(
     }
 
     sealed class CheckCleanEvent : Event {
+        object DoneSetRoom : CheckCleanEvent()
         object FailToReadRoomState : CheckCleanEvent()
     }
 }

@@ -27,6 +27,7 @@ import com.ssag.domain.clean.entity.StudentEntity
 import com.ssag.ssag_admin.R
 import com.ssag.ssag_admin.base.observeWithLifecycle
 import com.ssag.ssag_admin.ui.theme.Blue900
+import com.ssag.ssag_admin.ui.theme.ErrorColor
 import com.ssag.ssag_admin.ui.theme.Gray200
 import kotlinx.coroutines.InternalCoroutinesApi
 
@@ -52,10 +53,6 @@ fun CheckClean(
         checkCleanViewModel.setStartRoom()
     }
 
-    LaunchedEffect(key1 = checkCleanState.roomNumber) {
-        checkCleanViewModel.fetchCleanState()
-    }
-
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = {
@@ -64,6 +61,11 @@ fun CheckClean(
                 doOnSelectRoomClick = { checkCleanViewModel.showSelectRoomDialog() },
                 doOnCompleteClick = { navController.popBackStack() }
             )
+        },
+        snackbarHost = {
+            SnackbarHost(it) { data ->
+                Snackbar(backgroundColor = ErrorColor, snackbarData = data)
+            }
         }
     ) {
         CheckCleanContent(
@@ -121,6 +123,9 @@ fun CheckClean(
         when (it) {
             is CheckCleanViewModel.CheckCleanEvent.FailToReadRoomState -> {
                 scaffoldState.snackbarHostState.showSnackbar("호실정보를 읽어오지 못하였습니다.")
+            }
+            is CheckCleanViewModel.CheckCleanEvent.DoneSetRoom -> {
+                checkCleanViewModel.fetchCleanState()
             }
         }
     }
