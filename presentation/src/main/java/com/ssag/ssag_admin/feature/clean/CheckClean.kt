@@ -252,15 +252,32 @@ fun SelectRoomDialog(
     doOnRoomSelect: (Int) -> Unit,
     doOnSelectRoomDialogDismiss: () -> Unit
 ) {
-    Surface(
-        modifier = Modifier
-            .width(220.dp),
-        color = MaterialTheme.colors.surface,
-        shape = RoundedCornerShape(15.dp)
-    ) {
-        Column {
-            Dialog(onDismissRequest = doOnSelectRoomDialogDismiss) {
-                NumberPicker(value = roomNumber, onValueChange = doOnRoomSelect, range = roomRange)
+    Dialog(onDismissRequest = doOnSelectRoomDialogDismiss) {
+        Surface(
+            modifier = Modifier
+                .width(220.dp),
+            color = MaterialTheme.colors.surface,
+            shape = RoundedCornerShape(15.dp)
+        ) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    NumberPicker(
+                        value = roomNumber,
+                        onValueChange = doOnRoomSelect,
+                        range = roomRange
+                    )
+                    Text(text = "호")
+                }
+                Spacer(modifier = Modifier.height(6.dp))
+                Button(
+                    onClick = doOnSelectRoomDialogDismiss,
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp),
+                    shape = RoundedCornerShape(15.dp)
+                ) {
+                    Text(text = "선택", color = Color.White)
+                }
             }
         }
     }
@@ -491,6 +508,11 @@ fun CleanToggleButton(isChecked: Boolean, onCheckValueChange: (Boolean) -> Unit)
     }
 }
 
+@Composable
+fun CheckCleanMoveRoomButton() {
+
+}
+
 @Preview
 @Composable
 fun CheckCleanTopBarPreview() {
@@ -498,6 +520,17 @@ fun CheckCleanTopBarPreview() {
         checkCleanState = CheckCleanState.initial(),
         doOnSelectRoomClick = { },
         doOnCompleteClick = { }
+    )
+}
+
+@Preview
+@Composable
+fun CheckCleanSelectRoomDialogPreview() {
+    SelectRoomDialog(
+        roomNumber = 500,
+        roomRange = (400..600).toList(),
+        doOnRoomSelect = {},
+        doOnSelectRoomDialogDismiss = {}
     )
 }
 

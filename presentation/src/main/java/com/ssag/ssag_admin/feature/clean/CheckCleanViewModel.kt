@@ -66,7 +66,6 @@ class CheckCleanViewModel @Inject constructor(
 
     fun moveToRoom(room: Int) {
         sendIntent(CheckCleanIntent.MoveToRoom(room))
-        sendEvent(CheckCleanEvent.DoneSetRoom)
     }
 
     fun moveToNextRoom() {
@@ -85,6 +84,7 @@ class CheckCleanViewModel @Inject constructor(
 
     fun dismissSelectRoomDialog() {
         sendIntent(CheckCleanIntent.DismissSelectRoomDialog)
+        sendEvent(CheckCleanEvent.DoneSetRoom)
     }
 
     fun setLightIsComplete() {
