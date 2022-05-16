@@ -3,6 +3,8 @@ package com.ssag.ssag_admin.feature.clean
 import com.ssag.domain.clean.usecase.FetchRoomStateUseCase
 import com.ssag.ssag_admin.base.BaseViewModel
 import com.ssag.ssag_admin.base.Event
+import com.ssag.ssag_admin.base.MutableEventFlow
+import com.ssag.ssag_admin.base.asEventFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import org.threeten.bp.LocalDate
 import javax.inject.Inject
@@ -14,6 +16,9 @@ class CheckCleanViewModel @Inject constructor(
 
     override val initialState: CheckCleanState
         get() = CheckCleanState.initial()
+
+    private val _failedEvent = MutableEventFlow<Unit>()
+    val failedEvent = _failedEvent.asEventFlow()
 
     private val secondFloorRooms = 201..223
     private val thirdFloorRooms = 323 downTo 301
@@ -33,7 +38,7 @@ class CheckCleanViewModel @Inject constructor(
         }.onSuccess { roomState ->
             sendIntent(CheckCleanIntent.SetRoomState(roomState))
         }.onFailure {
-            sendEvent(CheckCleanEvent.FailToReadRoomState)
+            _failedEvent.emit(Unit)
         }
     }
 
@@ -152,9 +157,9 @@ class CheckCleanViewModel @Inject constructor(
             }
 
             is CheckCleanIntent.MoveToBeforeRoom -> {
-                if (roomIndex > 0) {
+                if (isNotFirstRoom()) {
                     roomIndex -= 1
-                    val beforeRoom = if (roomIndex > 0) rooms[roomIndex - 1] else 0
+                    val beforeRoom = rooms[roomIndex - 1]
                     setState(
                         oldState.copy(
                             roomNumber = rooms[roomIndex],
@@ -165,22 +170,27 @@ class CheckCleanViewModel @Inject constructor(
                 }
             }
             is CheckCleanIntent.MoveToNextRoom -> {
-                if (roomIndex < rooms.size - 1) {
+                if (isNotLastRoom()) {
                     roomIndex += 1
-                    val nextRoom = if (roomIndex < rooms.size - 1) rooms[roomIndex + 1] else 0
+                    val nextRoom = rooms[roomIndex + 1]
                     setState(
                         oldState.copy(
                             roomNumber = rooms[roomIndex],
-                            beforeRoomNumber = rooms[roomIndex - 1],
-                            nextRoomNumber = nextRoom
+                            nextRoomNumber = nextRoom,
+                            beforeRoomNumber = rooms[roomIndex - 1]
                         )
                     )
                 }
             }
-            is CheckCleanIntent.MoveToRoom -> {
+            is CheckCleanIntent.MoveToRoom -> { // before, next 를 어떻게 할것인가
+                roomIndex = rooms.indexOf(intent.roomNumber)
+                val beforeRoom = if (isNotFirstRoom()) rooms[roomIndex - 1] else 0
+                val nextRoom = if (isNotLastRoom()) rooms[roomIndex + 1] else 0
                 setState(
                     oldState.copy(
-                        roomNumber = intent.roomNumber
+                        beforeRoomNumber = beforeRoom,
+                        roomNumber = intent.roomNumber,
+                        nextRoomNumber = nextRoom
                     )
                 )
             }
@@ -368,6 +378,5 @@ class CheckCleanViewModel @Inject constructor(
 
     sealed class CheckCleanEvent : Event {
         object DoneSetRoom : CheckCleanEvent()
-        object FailToReadRoomState : CheckCleanEvent()
     }
 }

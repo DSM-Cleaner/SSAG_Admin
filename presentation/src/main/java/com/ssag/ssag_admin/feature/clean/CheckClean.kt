@@ -1,5 +1,6 @@
 package com.ssag.ssag_admin.feature.clean
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -30,9 +31,12 @@ import com.ssag.ssag_admin.ui.theme.Blue900
 import com.ssag.ssag_admin.ui.theme.ErrorColor
 import com.ssag.ssag_admin.ui.theme.Gray200
 import com.ssag.ssag_admin.ui.theme.Purple700
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.flow.debounce
 
-@OptIn(InternalCoroutinesApi::class)
+@SuppressLint("FlowOperatorInvokedInComposition")
+@OptIn(InternalCoroutinesApi::class, FlowPreview::class)
 @Composable
 fun CheckClean(
     navController: NavController,
@@ -145,11 +149,12 @@ fun CheckClean(
         )
     }
 
+    checkCleanViewModel.failedEvent.debounce(300).observeWithLifecycle {
+        scaffoldState.snackbarHostState.showSnackbar("호실정보를 읽어오지 못하였습니다.")
+    }
+
     checkCleanViewModel.event.observeWithLifecycle {
         when (it) {
-            is CheckCleanViewModel.CheckCleanEvent.FailToReadRoomState -> {
-                scaffoldState.snackbarHostState.showSnackbar("호실정보를 읽어오지 못하였습니다.")
-            }
             is CheckCleanViewModel.CheckCleanEvent.DoneSetRoom -> {
                 checkCleanViewModel.fetchCleanState()
             }
