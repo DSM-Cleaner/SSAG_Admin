@@ -150,13 +150,23 @@ fun CheckClean(
     }
 
     checkCleanViewModel.failedEvent.debounce(300).observeWithLifecycle {
-        scaffoldState.snackbarHostState.showSnackbar("호실정보를 읽어오지 못하였습니다.")
+        when (it) {
+            is CheckCleanViewModel.CheckCleanFailEvent.PostFail -> {
+                scaffoldState.snackbarHostState.showSnackbar("청소상태를 등록하지 못하였습니다.")
+            }
+            is CheckCleanViewModel.CheckCleanFailEvent.FetchFail -> {
+                scaffoldState.snackbarHostState.showSnackbar("호실정보를 읽어오지 못하였습니다.")
+            }
+        }
     }
 
     checkCleanViewModel.event.observeWithLifecycle {
         when (it) {
             is CheckCleanViewModel.CheckCleanEvent.DoneSetRoom -> {
                 checkCleanViewModel.fetchCleanState()
+            }
+            is CheckCleanViewModel.CheckCleanEvent.PostRoomState -> {
+                checkCleanViewModel.postCleanState()
             }
         }
     }

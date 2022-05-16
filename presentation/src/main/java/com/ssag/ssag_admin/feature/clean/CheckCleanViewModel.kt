@@ -1,6 +1,8 @@
 package com.ssag.ssag_admin.feature.clean
 
+import com.ssag.domain.clean.parameter.PostCleanStateParameter
 import com.ssag.domain.clean.usecase.FetchRoomStateUseCase
+import com.ssag.domain.clean.usecase.PostCleanStateUseCase
 import com.ssag.ssag_admin.base.BaseViewModel
 import com.ssag.ssag_admin.base.Event
 import com.ssag.ssag_admin.base.MutableEventFlow
@@ -11,13 +13,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CheckCleanViewModel @Inject constructor(
-    private val fetchRoomStateUseCase: FetchRoomStateUseCase
+    private val fetchRoomStateUseCase: FetchRoomStateUseCase,
+    private val postCleanStateUseCase: PostCleanStateUseCase
 ) : BaseViewModel<CheckCleanState, CheckCleanIntent, CheckCleanViewModel.CheckCleanEvent>() {
 
     override val initialState: CheckCleanState
         get() = CheckCleanState.initial()
 
-    private val _failedEvent = MutableEventFlow<Unit>()
+    private val _failedEvent = MutableEventFlow<CheckCleanFailEvent>()
     val failedEvent = _failedEvent.asEventFlow()
 
     private val secondFloorRooms = 201..223
@@ -38,7 +41,26 @@ class CheckCleanViewModel @Inject constructor(
         }.onSuccess { roomState ->
             sendIntent(CheckCleanIntent.SetRoomState(roomState))
         }.onFailure {
-            _failedEvent.emit(Unit)
+            _failedEvent.emit(CheckCleanFailEvent.FetchFail)
+        }
+    }
+
+    suspend fun postCleanState() {
+        kotlin.runCatching {
+            val state = state.value
+            val roomState = state.roomState
+            val parameter = PostCleanStateParameter(
+                roomId = state.roomNumber,
+                lightIsNotComplete = roomState.lightIsNotComplete,
+                plugIsNotComplete = roomState.plugIsNotComplete,
+                shoesAreNotComplete = roomState.shoesAreNotComplete,
+                studentList = roomState.students
+            )
+            postCleanStateUseCase.execute(parameter)
+        }.onSuccess {
+
+        }.onFailure {
+            _failedEvent.emit(CheckCleanFailEvent.PostFail)
         }
     }
 
@@ -157,6 +179,7 @@ class CheckCleanViewModel @Inject constructor(
             }
 
             is CheckCleanIntent.MoveToBeforeRoom -> {
+                sendEvent(CheckCleanEvent.PostRoomState)
                 if (isNotFirstRoom()) {
                     roomIndex -= 1
                     val beforeRoom = rooms[roomIndex - 1]
@@ -170,6 +193,7 @@ class CheckCleanViewModel @Inject constructor(
                 }
             }
             is CheckCleanIntent.MoveToNextRoom -> {
+                sendEvent(CheckCleanEvent.PostRoomState)
                 if (isNotLastRoom()) {
                     roomIndex += 1
                     val nextRoom = rooms[roomIndex + 1]
@@ -182,7 +206,8 @@ class CheckCleanViewModel @Inject constructor(
                     )
                 }
             }
-            is CheckCleanIntent.MoveToRoom -> { // before, next 를 어떻게 할것인가
+            is CheckCleanIntent.MoveToRoom -> {
+                sendEvent(CheckCleanEvent.PostRoomState)
                 roomIndex = rooms.indexOf(intent.roomNumber)
                 val beforeRoom = if (isNotFirstRoom()) rooms[roomIndex - 1] else 0
                 val nextRoom = if (isNotLastRoom()) rooms[roomIndex + 1] else 0
@@ -378,5 +403,11 @@ class CheckCleanViewModel @Inject constructor(
 
     sealed class CheckCleanEvent : Event {
         object DoneSetRoom : CheckCleanEvent()
+        object PostRoomState : CheckCleanEvent()
+    }
+
+    sealed class CheckCleanFailEvent : Event {
+        object FetchFail : CheckCleanFailEvent()
+        object PostFail : CheckCleanFailEvent()
     }
 }

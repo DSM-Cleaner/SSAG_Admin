@@ -36,6 +36,6 @@ class AuthDataStorageImpl @Inject constructor(
         }
         return "Bearer $token"
     }
-
-    private val Context.dataStore: DataStore<Preferences> by preferencesDataStore("ssag_auth")
 }
+
+private val Context.dataStore: DataStore<Preferences> by preferencesDataStore("ssag_auth")
