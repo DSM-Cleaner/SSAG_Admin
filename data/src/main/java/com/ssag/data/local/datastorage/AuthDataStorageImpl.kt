@@ -21,7 +21,7 @@ class AuthDataStorageImpl @Inject constructor(
     }
 
     override fun setAccessToken(token: String) {
-        CoroutineScope(Dispatchers.IO).launch {
+        runBlocking(Dispatchers.IO) {
             context.dataStore.edit {
                 it[ACCESS_TOKEN_KEY] = token
             }
@@ -35,6 +35,14 @@ class AuthDataStorageImpl @Inject constructor(
             }.firstOrNull()
         }
         return "Bearer $token"
+    }
+
+    override fun clearDataStorage() {
+        runBlocking(Dispatchers.IO) {
+            context.dataStore.edit {
+                it.clear()
+            }
+        }
     }
 }
 
