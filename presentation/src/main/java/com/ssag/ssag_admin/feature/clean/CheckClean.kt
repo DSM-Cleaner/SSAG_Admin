@@ -1,5 +1,6 @@
 package com.ssag.ssag_admin.feature.clean
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,15 +18,25 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.chargemap.compose.numberpicker.NumberPicker
 import com.ssag.domain.clean.entity.CleanStateEntity
 import com.ssag.domain.clean.entity.RoomStateEntity
 import com.ssag.domain.clean.entity.StudentEntity
 import com.ssag.ssag_admin.R
+import com.ssag.ssag_admin.base.observeWithLifecycle
 import com.ssag.ssag_admin.ui.theme.Blue900
+import com.ssag.ssag_admin.ui.theme.ErrorColor
 import com.ssag.ssag_admin.ui.theme.Gray200
+import com.ssag.ssag_admin.ui.theme.Purple700
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.flow.debounce
 
+@SuppressLint("FlowOperatorInvokedInComposition")
+@OptIn(InternalCoroutinesApi::class, FlowPreview::class)
 @Composable
 fun CheckClean(
     navController: NavController,
@@ -47,19 +58,45 @@ fun CheckClean(
         checkCleanViewModel.setStartRoom()
     }
 
-    LaunchedEffect(key1 = checkCleanState.roomNumber) {
-        checkCleanViewModel.fetchCleanState()
-    }
-
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = {
             CheckCleanTopBarContent(
                 checkCleanState = checkCleanState,
-                doOnSelectRoomClick = { },
+                doOnSelectRoomClick = { checkCleanViewModel.showSelectRoomDialog() },
                 doOnCompleteClick = { navController.popBackStack() }
             )
-        }
+        },
+        snackbarHost = {
+            SnackbarHost(it) { data ->
+                Snackbar(backgroundColor = ErrorColor, snackbarData = data)
+            }
+        },
+        floatingActionButton = {
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp, 0.dp)
+            ) {
+                if (checkCleanViewModel.isNotFirstRoom()) {
+                    CheckCleanMoveRoomButton(room = checkCleanState.beforeRoomNumber) {
+                        checkCleanViewModel.moveToBeforeRoom()
+                    }
+                } else {
+                    Spacer(modifier = Modifier.width(150.dp))
+                }
+
+                if (checkCleanViewModel.isNotLastRoom()) {
+                    CheckCleanMoveRoomButton(room = checkCleanState.nextRoomNumber) {
+                        checkCleanViewModel.moveToNextRoom()
+                    }
+                } else {
+                    Spacer(modifier = Modifier.width(150.dp))
+                }
+            }
+        },
+        floatingActionButtonPosition = FabPosition.Center
     ) {
         CheckCleanContent(
             checkCleanState = checkCleanState,
@@ -101,8 +138,37 @@ fun CheckClean(
             },
             doOnPersonalPlaceCompleted = { studentId ->
                 checkCleanViewModel.setPersonalPlaceIsComplete(studentId)
+            },
+            rooms = checkCleanViewModel.fetchRooms(),
+            doOnRoomSelect = { room ->
+                checkCleanViewModel.moveToRoom(room)
+            },
+            doOnSelectRoomDialogDismiss = {
+                checkCleanViewModel.dismissSelectRoomDialog()
             }
         )
+    }
+
+    checkCleanViewModel.failedEvent.debounce(300).observeWithLifecycle {
+        when (it) {
+            is CheckCleanViewModel.CheckCleanFailEvent.PostFail -> {
+                scaffoldState.snackbarHostState.showSnackbar("청소상태를 등록하지 못하였습니다.")
+            }
+            is CheckCleanViewModel.CheckCleanFailEvent.FetchFail -> {
+                scaffoldState.snackbarHostState.showSnackbar("호실정보를 읽어오지 못하였습니다.")
+            }
+        }
+    }
+
+    checkCleanViewModel.event.observeWithLifecycle {
+        when (it) {
+            is CheckCleanViewModel.CheckCleanEvent.DoneSetRoom -> {
+                checkCleanViewModel.fetchCleanState()
+            }
+            is CheckCleanViewModel.CheckCleanEvent.PostRoomState -> {
+                checkCleanViewModel.postCleanState()
+            }
+        }
     }
 }
 
@@ -138,6 +204,7 @@ fun CheckCleanTopBarContent(
             Text(
                 text = "검사완료",
                 fontWeight = FontWeight.SemiBold,
+                color = Color.White,
                 modifier = Modifier
                     .clickable { doOnCompleteClick() }
                     .padding(10.dp)
@@ -152,6 +219,7 @@ fun CheckCleanTopBarContent(
 @Composable
 fun CheckCleanContent(
     checkCleanState: CheckCleanState,
+    rooms: List<Int>,
     doOnStudentBedIsNotClean: (Long) -> Unit,
     doOnStudentBedIsClean: (Long) -> Unit,
     doOnStudentClotheIsNotClean: (Long) -> Unit,
@@ -160,7 +228,9 @@ fun CheckCleanContent(
     doOnPlugValueChanged: (Boolean) -> Unit,
     doOnShoesValueChanged: (Boolean) -> Unit,
     doOnPersonalPlaceNotCompleted: (Long) -> Unit,
-    doOnPersonalPlaceCompleted: (Long) -> Unit
+    doOnPersonalPlaceCompleted: (Long) -> Unit,
+    doOnRoomSelect: (Int) -> Unit,
+    doOnSelectRoomDialogDismiss: () -> Unit
 ) {
     val scrollState = rememberScrollState()
     Column(
@@ -205,12 +275,54 @@ fun CheckCleanContent(
                 doOnPersonalPlaceNotCompleted = doOnPersonalPlaceNotCompleted
             )
         }
+
+        if (checkCleanState.showSelectRoomDialog) {
+            SelectRoomDialog(
+                roomNumber = checkCleanState.roomNumber,
+                roomRange = rooms,
+                doOnRoomSelect = doOnRoomSelect,
+                doOnSelectRoomDialogDismiss = doOnSelectRoomDialogDismiss
+            )
+        }
     }
 }
 
 @Composable
-fun SelectRoomDialog(roomNumber: Int) {
-
+fun SelectRoomDialog(
+    roomNumber: Int,
+    roomRange: List<Int>,
+    doOnRoomSelect: (Int) -> Unit,
+    doOnSelectRoomDialogDismiss: () -> Unit
+) {
+    Dialog(onDismissRequest = doOnSelectRoomDialogDismiss) {
+        Surface(
+            modifier = Modifier
+                .width(220.dp),
+            color = MaterialTheme.colors.surface,
+            shape = RoundedCornerShape(15.dp)
+        ) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    NumberPicker(
+                        value = roomNumber,
+                        onValueChange = doOnRoomSelect,
+                        range = roomRange
+                    )
+                    Text(text = "호")
+                }
+                Spacer(modifier = Modifier.height(6.dp))
+                Button(
+                    onClick = doOnSelectRoomDialogDismiss,
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp),
+                    shape = RoundedCornerShape(15.dp)
+                ) {
+                    Text(text = "선택", color = Color.White)
+                }
+            }
+        }
+    }
 }
 
 @Composable
@@ -438,6 +550,21 @@ fun CleanToggleButton(isChecked: Boolean, onCheckValueChange: (Boolean) -> Unit)
     }
 }
 
+@Composable
+fun CheckCleanMoveRoomButton(room: Int, doOnMoveRoomButtonClick: () -> Unit) {
+    Button(
+        onClick = doOnMoveRoomButtonClick,
+        shape = RoundedCornerShape(15.dp),
+        colors = ButtonDefaults.buttonColors(
+            backgroundColor = Purple700,
+            contentColor = Color.White
+        ),
+        modifier = Modifier.size(150.dp, 40.dp)
+    ) {
+        Text(text = "$room 호")
+    }
+}
+
 @Preview
 @Composable
 fun CheckCleanTopBarPreview() {
@@ -445,6 +572,17 @@ fun CheckCleanTopBarPreview() {
         checkCleanState = CheckCleanState.initial(),
         doOnSelectRoomClick = { },
         doOnCompleteClick = { }
+    )
+}
+
+@Preview
+@Composable
+fun CheckCleanSelectRoomDialogPreview() {
+    SelectRoomDialog(
+        roomNumber = 500,
+        roomRange = (400..600).toList(),
+        doOnRoomSelect = {},
+        doOnSelectRoomDialogDismiss = {}
     )
 }
 
@@ -519,6 +657,9 @@ fun CheckCleanContentPreview() {
         doOnPlugValueChanged = {},
         doOnLightValueChanged = {},
         doOnPersonalPlaceNotCompleted = {},
-        doOnPersonalPlaceCompleted = {}
+        doOnPersonalPlaceCompleted = {},
+        doOnSelectRoomDialogDismiss = {},
+        doOnRoomSelect = {},
+        rooms = emptyList()
     )
 }

@@ -21,7 +21,7 @@ class AuthDataStorageImpl @Inject constructor(
     }
 
     override fun setAccessToken(token: String) {
-        CoroutineScope(Dispatchers.IO).launch {
+        runBlocking(Dispatchers.IO) {
             context.dataStore.edit {
                 it[ACCESS_TOKEN_KEY] = token
             }
@@ -37,5 +37,13 @@ class AuthDataStorageImpl @Inject constructor(
         return "Bearer $token"
     }
 
-    private val Context.dataStore: DataStore<Preferences> by preferencesDataStore("ssag_auth")
+    override fun clearDataStorage() {
+        runBlocking(Dispatchers.IO) {
+            context.dataStore.edit {
+                it.clear()
+            }
+        }
+    }
 }
+
+private val Context.dataStore: DataStore<Preferences> by preferencesDataStore("ssag_auth")

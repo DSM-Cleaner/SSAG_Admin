@@ -1,6 +1,7 @@
 package com.ssag.domain.auth
 
 import com.nhaarman.mockitokotlin2.mock
+import com.ssag.domain.auth.parameter.ChangePasswordParameter
 import com.ssag.domain.auth.repository.AuthRepository
 import com.ssag.domain.auth.usecase.ChangePasswordUseCase
 import kotlinx.coroutines.runBlocking
@@ -15,10 +16,12 @@ class ChangePasswordUseCaseUnitTest {
 
     @Test
     fun testChangePasswordUseCase() {
+        val currentPassword = "currentPassword"
         val newPassword = "newPassword"
 
         runBlocking {
-            val result = changePasswordUseCase.execute(newPassword)
+            val result =
+                changePasswordUseCase.execute(ChangePasswordParameter(currentPassword, newPassword))
             assertEquals(result, Unit)
         }
     }

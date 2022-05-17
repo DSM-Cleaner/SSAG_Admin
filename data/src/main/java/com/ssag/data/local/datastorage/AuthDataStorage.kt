@@ -5,4 +5,6 @@ interface AuthDataStorage {
     fun setAccessToken(token: String)
 
     fun fetchAccessToken(): String
+
+    fun clearDataStorage()
 }

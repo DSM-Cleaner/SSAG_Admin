@@ -15,6 +15,7 @@ object Version {
 
     const val jetpackCompose = "1.0.1"
     const val activityCompose = "1.4.0"
+    const val composeNumberPicker = "0.0.12"
 
     const val lifecycle = "2.4.0"
     const val coroutine = "1.6.0"

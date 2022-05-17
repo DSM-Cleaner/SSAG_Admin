@@ -17,6 +17,8 @@ object Dependency {
             "androidx.compose.ui:ui-tooling-preview:${Version.jetpackCompose}"
         const val activityCompose =
             "androidx.activity:activity-compose:${Version.activityCompose}"
+        const val composeNumberPicker =
+            "com.chargemap.compose:numberpicker:${Version.composeNumberPicker}"
         const val composeTooling = "androidx.compose.ui:ui-tooling:${Version.jetpackCompose}"
     }
 

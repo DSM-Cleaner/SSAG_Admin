@@ -14,7 +14,7 @@ import com.ssag.ssag_admin.ui.navigation.AppNavigationItem
 @Composable
 fun SsagApp() {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = AppNavigationItem.CheckClean.route) {
+    NavHost(navController = navController, startDestination = AppNavigationItem.Login.route) {
         composable(AppNavigationItem.Login.route) {
             Login(navController = navController)
         }

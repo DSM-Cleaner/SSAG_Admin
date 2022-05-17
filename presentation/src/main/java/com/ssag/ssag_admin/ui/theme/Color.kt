@@ -12,3 +12,5 @@ val Blue700 = Color(0xFF84B5FF)
 val Blue900 = Color(0xFF3774E0)
 
 val Gray200 = Color(0xFFCACACA)
+
+val ErrorColor = Color(0xFFB00020)

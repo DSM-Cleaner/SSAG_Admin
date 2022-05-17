@@ -1,18 +1,27 @@
 package com.ssag.ssag_admin.feature.clean
 
+import com.ssag.domain.clean.parameter.PostCleanStateParameter
+import com.ssag.domain.clean.usecase.FetchRoomStateUseCase
+import com.ssag.domain.clean.usecase.PostCleanStateUseCase
 import com.ssag.ssag_admin.base.BaseViewModel
 import com.ssag.ssag_admin.base.Event
+import com.ssag.ssag_admin.base.MutableEventFlow
+import com.ssag.ssag_admin.base.asEventFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import org.threeten.bp.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
 class CheckCleanViewModel @Inject constructor(
-
+    private val fetchRoomStateUseCase: FetchRoomStateUseCase,
+    private val postCleanStateUseCase: PostCleanStateUseCase
 ) : BaseViewModel<CheckCleanState, CheckCleanIntent, CheckCleanViewModel.CheckCleanEvent>() {
 
     override val initialState: CheckCleanState
         get() = CheckCleanState.initial()
+
+    private val _failedEvent = MutableEventFlow<CheckCleanFailEvent>()
+    val failedEvent = _failedEvent.asEventFlow()
 
     private val secondFloorRooms = 201..223
     private val thirdFloorRooms = 323 downTo 301
@@ -27,19 +36,60 @@ class CheckCleanViewModel @Inject constructor(
         else secondFloorRooms + thirdFloorRooms + fourthFloorRooms + fifthFloorRooms
 
     suspend fun fetchCleanState() {
+        kotlin.runCatching {
+            fetchRoomStateUseCase.execute(state.value.roomNumber)
+        }.onSuccess { roomState ->
+            sendIntent(CheckCleanIntent.SetRoomState(roomState))
+        }.onFailure {
+            _failedEvent.emit(CheckCleanFailEvent.FetchFail)
+        }
+    }
 
+    suspend fun postCleanState() {
+        kotlin.runCatching {
+            val state = state.value
+            val roomState = state.roomState
+            val parameter = PostCleanStateParameter(
+                roomId = state.roomNumber,
+                lightIsNotComplete = roomState.lightIsNotComplete,
+                plugIsNotComplete = roomState.plugIsNotComplete,
+                shoesAreNotComplete = roomState.shoesAreNotComplete,
+                studentList = roomState.students
+            )
+            postCleanStateUseCase.execute(parameter)
+        }.onSuccess {
+
+        }.onFailure {
+            _failedEvent.emit(CheckCleanFailEvent.PostFail)
+        }
     }
 
     fun setTeacherGender(isMan: Boolean) {
-        if(isMan) {
+        if (isMan) {
             sendIntent(CheckCleanIntent.SetTeacherIsMan)
         } else {
             sendIntent(CheckCleanIntent.SetTeacherIsWoman)
         }
     }
 
+    fun fetchRooms(): List<Int> =
+        rooms
+
+    fun isNotFirstRoom(): Boolean =
+        roomIndex > 0
+
+    fun isNotLastRoom(): Boolean =
+        roomIndex < rooms.size - 1
+
+    private fun isFirstRoom(): Boolean =
+        roomIndex == 0
+
+    private fun isLastRoom(): Boolean =
+        roomIndex == rooms.size - 1
+
     fun setStartRoom() {
         sendIntent(CheckCleanIntent.MoveToRoom(rooms[roomIndex]))
+        sendEvent(CheckCleanEvent.DoneSetRoom)
     }
 
     fun checkDayIsPersonalCheckDay() {
@@ -51,7 +101,36 @@ class CheckCleanViewModel @Inject constructor(
     }
 
     private fun LocalDate.isPersonalCheckDay() =
-        this.dayOfWeek.value == 5 || this.dayOfWeek.value == 3
+        this.dayOfWeek.value.isTuesday() || this.dayOfWeek.value.isFriday()
+
+    private fun Int.isTuesday(): Boolean =
+        this == 2
+
+    private fun Int.isFriday(): Boolean =
+        this == 5
+
+    fun moveToRoom(room: Int) {
+        sendIntent(CheckCleanIntent.MoveToRoom(room))
+    }
+
+    fun moveToNextRoom() {
+        sendIntent(CheckCleanIntent.MoveToNextRoom)
+        sendEvent(CheckCleanEvent.DoneSetRoom)
+    }
+
+    fun moveToBeforeRoom() {
+        sendIntent(CheckCleanIntent.MoveToBeforeRoom)
+        sendEvent(CheckCleanEvent.DoneSetRoom)
+    }
+
+    fun showSelectRoomDialog() {
+        sendIntent(CheckCleanIntent.ShowSelectRoomDialog)
+    }
+
+    fun dismissSelectRoomDialog() {
+        sendIntent(CheckCleanIntent.DismissSelectRoomDialog)
+        sendEvent(CheckCleanEvent.DoneSetRoom)
+    }
 
     fun setLightIsComplete() {
         sendIntent(CheckCleanIntent.SetLightIsComplete)
@@ -103,10 +182,19 @@ class CheckCleanViewModel @Inject constructor(
 
     override fun reduceIntent(oldState: CheckCleanState, intent: CheckCleanIntent) {
         when (intent) {
+            is CheckCleanIntent.SetRoomState -> {
+                setState(
+                    oldState.copy(
+                        roomState = intent.roomState
+                    )
+                )
+            }
+
             is CheckCleanIntent.MoveToBeforeRoom -> {
-                if (roomIndex > 0) {
+                sendEvent(CheckCleanEvent.PostRoomState)
+                if (isNotFirstRoom()) {
                     roomIndex -= 1
-                    val beforeRoom = if (roomIndex > 0) rooms[roomIndex - 1] else 0
+                    val beforeRoom = if (isFirstRoom()) 0 else rooms[roomIndex - 1]
                     setState(
                         oldState.copy(
                             roomNumber = rooms[roomIndex],
@@ -117,22 +205,29 @@ class CheckCleanViewModel @Inject constructor(
                 }
             }
             is CheckCleanIntent.MoveToNextRoom -> {
-                if (roomIndex < rooms.size - 1) {
+                sendEvent(CheckCleanEvent.PostRoomState)
+                if (isNotLastRoom()) {
                     roomIndex += 1
-                    val nextRoom = if (roomIndex < rooms.size - 1) rooms[roomIndex + 1] else 0
+                    val nextRoom = if (isLastRoom()) 0 else rooms[roomIndex + 1]
                     setState(
                         oldState.copy(
                             roomNumber = rooms[roomIndex],
-                            beforeRoomNumber = rooms[roomIndex - 1],
-                            nextRoomNumber = nextRoom
+                            nextRoomNumber = nextRoom,
+                            beforeRoomNumber = rooms[roomIndex - 1]
                         )
                     )
                 }
             }
             is CheckCleanIntent.MoveToRoom -> {
+                sendEvent(CheckCleanEvent.PostRoomState)
+                roomIndex = rooms.indexOf(intent.roomNumber)
+                val beforeRoom = if (isNotFirstRoom()) rooms[roomIndex - 1] else 0
+                val nextRoom = if (isNotLastRoom()) rooms[roomIndex + 1] else 0
                 setState(
                     oldState.copy(
-                        roomNumber = intent.roomNumber
+                        beforeRoomNumber = beforeRoom,
+                        roomNumber = intent.roomNumber,
+                        nextRoomNumber = nextRoom
                     )
                 )
             }
@@ -301,10 +396,30 @@ class CheckCleanViewModel @Inject constructor(
                     )
                 )
             }
+            is CheckCleanIntent.DismissSelectRoomDialog -> {
+                setState(
+                    oldState.copy(
+                        showSelectRoomDialog = false
+                    )
+                )
+            }
+            is CheckCleanIntent.ShowSelectRoomDialog -> {
+                setState(
+                    oldState.copy(
+                        showSelectRoomDialog = true
+                    )
+                )
+            }
         }
     }
 
     sealed class CheckCleanEvent : Event {
+        object DoneSetRoom : CheckCleanEvent()
+        object PostRoomState : CheckCleanEvent()
+    }
 
+    sealed class CheckCleanFailEvent : Event {
+        object FetchFail : CheckCleanFailEvent()
+        object PostFail : CheckCleanFailEvent()
     }
 }

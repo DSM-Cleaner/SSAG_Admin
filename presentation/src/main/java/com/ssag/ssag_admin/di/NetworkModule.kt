@@ -2,6 +2,7 @@ package com.ssag.ssag_admin.di
 
 import com.ssag.data.interceptor.AuthInterceptor
 import com.ssag.data.remote.api.AuthApi
+import com.ssag.data.remote.api.CleanApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -46,4 +47,8 @@ object NetworkModule {
     @Provides
     fun provideAuthApi(retrofit: Retrofit): AuthApi =
         retrofit.create(AuthApi::class.java)
+
+    @Provides
+    fun provideCleanApi(retrofit: Retrofit): CleanApi =
+        retrofit.create(CleanApi::class.java)
 }

@@ -1,12 +1,18 @@
 package com.ssag.ssag_admin.feature.clean
 
+import com.ssag.domain.clean.entity.RoomStateEntity
 import com.ssag.ssag_admin.base.Intent
 
 sealed class CheckCleanIntent : Intent {
 
+    data class SetRoomState(val roomState: RoomStateEntity) : CheckCleanIntent()
+
     object MoveToNextRoom : CheckCleanIntent()
     object MoveToBeforeRoom : CheckCleanIntent()
     data class MoveToRoom(val roomNumber: Int) : CheckCleanIntent()
+
+    object ShowSelectRoomDialog : CheckCleanIntent()
+    object DismissSelectRoomDialog : CheckCleanIntent()
 
     object SetDayIsPersonalCheckDay : CheckCleanIntent()
     object SetDayIsNotPersonalCheckDay : CheckCleanIntent()

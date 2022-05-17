@@ -24,11 +24,11 @@ class FetchRoomStateUseCaseUnitTest {
             students = emptyList()
         )
 
-        whenever(cleanRepository.fetchRoomState(306)).thenReturn(
-            roomStateEntity
-        )
-
         runBlocking {
+            whenever(cleanRepository.fetchRoomState(306)).thenReturn(
+                roomStateEntity
+            )
+
             val result = fetchRoomStateUseCase.execute(306)
             assertEquals(result, roomStateEntity)
         }
