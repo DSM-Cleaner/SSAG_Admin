@@ -81,6 +81,12 @@ class CheckCleanViewModel @Inject constructor(
     fun isNotLastRoom(): Boolean =
         roomIndex < rooms.size - 1
 
+    private fun isFirstRoom(): Boolean =
+        roomIndex == 0
+
+    private fun isLastRoom(): Boolean =
+        roomIndex == rooms.size - 1
+
     fun setStartRoom() {
         sendIntent(CheckCleanIntent.MoveToRoom(rooms[roomIndex]))
         sendEvent(CheckCleanEvent.DoneSetRoom)
@@ -182,7 +188,7 @@ class CheckCleanViewModel @Inject constructor(
                 sendEvent(CheckCleanEvent.PostRoomState)
                 if (isNotFirstRoom()) {
                     roomIndex -= 1
-                    val beforeRoom = rooms[roomIndex - 1]
+                    val beforeRoom = if (isFirstRoom()) 0 else rooms[roomIndex - 1]
                     setState(
                         oldState.copy(
                             roomNumber = rooms[roomIndex],
@@ -196,7 +202,7 @@ class CheckCleanViewModel @Inject constructor(
                 sendEvent(CheckCleanEvent.PostRoomState)
                 if (isNotLastRoom()) {
                     roomIndex += 1
-                    val nextRoom = rooms[roomIndex + 1]
+                    val nextRoom = if (isLastRoom()) 0 else rooms[roomIndex + 1]
                     setState(
                         oldState.copy(
                             roomNumber = rooms[roomIndex],
