@@ -16,6 +16,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
@@ -47,6 +48,7 @@ fun Login(navController: NavController, loginViewModel: LoginViewModel = hiltVie
     Scaffold(scaffoldState = scaffoldState) {
         LoginContent(
             loginState = loginState,
+            doOnNameInput = { name -> loginViewModel.inputName(name) },
             doOnPasswordInput = { password -> loginViewModel.inputPassword(password) },
             doOnLoginButtonClick = {
                 coroutineScope.launch {
@@ -65,12 +67,12 @@ fun Login(navController: NavController, loginViewModel: LoginViewModel = hiltVie
                 }
             }
         )
+    }
 
-        loginViewModel.event.observeWithLifecycle {
-            when (it) {
-                is LoginViewModel.LoginEvent.FailedLogin -> {
-                    scaffoldState.snackbarHostState.showSnackbar("로그인을 실패했습니다.")
-                }
+    loginViewModel.event.observeWithLifecycle {
+        when (it) {
+            is LoginViewModel.LoginEvent.FailedLogin -> {
+                scaffoldState.snackbarHostState.showSnackbar("로그인을 실패했습니다.")
             }
         }
     }
@@ -79,6 +81,7 @@ fun Login(navController: NavController, loginViewModel: LoginViewModel = hiltVie
 @Composable
 fun LoginContent(
     loginState: LoginState,
+    doOnNameInput: (String) -> Unit,
     doOnPasswordInput: (String) -> Unit,
     doOnLoginButtonClick: () -> Unit,
     doOnStartCheckClick: () -> Unit,
@@ -93,6 +96,7 @@ fun LoginContent(
         LoginTitle()
         LoginLayout(
             loginState = loginState,
+            doOnNameInput = doOnNameInput,
             doOnPasswordInput = doOnPasswordInput,
             doOnLoginButtonClick = doOnLoginButtonClick,
             doOnStartCheckClick = doOnStartCheckClick,
@@ -124,6 +128,7 @@ fun LoginTitle() {
 @Composable
 fun LoginLayout(
     loginState: LoginState,
+    doOnNameInput: (String) -> Unit,
     doOnPasswordInput: (String) -> Unit,
     doOnLoginButtonClick: () -> Unit,
     doOnStartCheckClick: () -> Unit,
@@ -141,7 +146,8 @@ fun LoginLayout(
         NeedLoginLayout(
             loginState = loginState,
             doOnPasswordInput = doOnPasswordInput,
-            doOnLoginButtonClick = doOnLoginButtonClick
+            doOnLoginButtonClick = doOnLoginButtonClick,
+            doOnNameInput = doOnNameInput
         )
     }
 }
@@ -241,14 +247,20 @@ private fun floorText(startFloor: Int): String {
 @Composable
 fun NeedLoginLayout(
     loginState: LoginState,
+    doOnNameInput: (String) -> Unit,
     doOnPasswordInput: (String) -> Unit,
     doOnLoginButtonClick: () -> Unit
 ) {
-    val authComment = "Tip: 비밀번호를 통해 청소 검사를 하시는 선생님이 누구인지 구별합니다."
+    val nameLabel = "성함을 입력해 주세요"
     val passwordLabel = "비밀번호를 입력해 주세요"
     LoginColumn {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(text = authComment, modifier = Modifier.padding(40.dp), color = Blue700)
+            NameTextField(
+                nameText = loginState.name,
+                labelText = nameLabel,
+                doOnNameInput = doOnNameInput
+            )
+            Spacer(modifier = Modifier.height(10.dp))
             PasswordTextField(
                 passwordText = loginState.password,
                 doOnPasswordInput = doOnPasswordInput,
@@ -265,6 +277,32 @@ fun NeedLoginLayout(
         )
         Spacer(modifier = Modifier.height(30.dp))
     }
+}
+
+@Composable
+fun NameTextField(
+    nameText: String,
+    labelText: String,
+    doOnNameInput: (String) -> Unit
+) {
+    val focusManager = LocalFocusManager.current
+    OutlinedTextField(
+        value = nameText, onValueChange = doOnNameInput,
+        colors = textFieldColors(
+            backgroundColor = Color.White,
+            textColor = Color.Black
+        ),
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Text,
+            imeAction = ImeAction.Next
+        ),
+        keyboardActions = KeyboardActions(
+            onDone = {
+                focusManager.moveFocus(FocusDirection.Down)
+            }
+        ),
+        label = { Text(text = labelText) }
+    )
 }
 
 @Composable
@@ -341,13 +379,15 @@ fun LoginContentPreview() {
             isManTeacher = false,
             isLoading = false,
             5,
+            "",
             ""
         ),
         doOnPasswordInput = {},
         doOnLoginButtonClick = {},
         doOnStartCheckClick = {},
         doOnChangePasswordClick = {},
-        doOnLogoutClick = {}
+        doOnLogoutClick = {},
+        doOnNameInput = {}
     )
 }
 
@@ -362,6 +402,7 @@ fun StartCleanLayoutPreview() {
             isManTeacher = false,
             isLoading = false,
             5,
+            "",
             ""
         ),
         doOnChangePasswordClick = {},

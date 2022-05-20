@@ -8,6 +8,7 @@ data class LoginState(
     val isManTeacher: Boolean,
     val isLoading: Boolean,
     val startFloor: Int,
+    val name: String,
     val password: String
 ) : State {
 
@@ -19,6 +20,7 @@ data class LoginState(
                 isManTeacher = true,
                 isLoading = false,
                 startFloor = 0,
+                name = "",
                 password = ""
             )
     }

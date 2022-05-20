@@ -31,6 +31,10 @@ class LoginViewModel @Inject constructor(
         }
     }
 
+    fun inputName(name: String) {
+        sendIntent(LoginIntent.InputName(name))
+    }
+
     fun inputPassword(password: String) {
         sendIntent(LoginIntent.InputPassword(password))
     }
@@ -56,6 +60,14 @@ class LoginViewModel @Inject constructor(
                 setState(
                     oldState.copy(
                         password = intent.password
+                    )
+                )
+            }
+
+            is LoginIntent.InputName -> {
+                setState(
+                    oldState.copy(
+                        name = intent.name
                     )
                 )
             }
