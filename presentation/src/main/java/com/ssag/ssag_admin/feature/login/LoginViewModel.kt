@@ -1,5 +1,6 @@
 package com.ssag.ssag_admin.feature.login
 
+import com.ssag.domain.auth.parameter.LoginParameter
 import com.ssag.domain.auth.usecase.LoginUseCase
 import com.ssag.domain.auth.usecase.LogoutUseCase
 import com.ssag.ssag_admin.base.BaseViewModel
@@ -20,7 +21,9 @@ class LoginViewModel @Inject constructor(
         if (!state.value.isLoading) {
             kotlin.runCatching {
                 sendIntent(LoginIntent.StartLoading)
-                loginUseCase.execute(state.value.password)
+                val state = state.value
+                val parameter = LoginParameter(state.name, state.password)
+                loginUseCase.execute(parameter)
             }.onSuccess {
                 sendIntent(LoginIntent.SuccessLogin(it))
             }.onFailure {
