@@ -1,9 +1,9 @@
-package com.ssag.data.remote.datasource
+package com.ssag.domain.feature.clean.repository
 
 import com.ssag.domain.feature.clean.entity.RoomStateEntity
 import com.ssag.domain.feature.clean.parameter.PostCleanStateParameter
 
-interface CleanRemoteDataSource {
+interface CleanRepository {
 
     suspend fun postCleanState(postCleanStateParameter: PostCleanStateParameter)
 

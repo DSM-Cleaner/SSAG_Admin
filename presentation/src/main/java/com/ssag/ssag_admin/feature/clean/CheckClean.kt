@@ -22,9 +22,9 @@ import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.chargemap.compose.numberpicker.NumberPicker
-import com.ssag.domain.clean.entity.CleanStateEntity
-import com.ssag.domain.clean.entity.RoomStateEntity
-import com.ssag.domain.clean.entity.StudentEntity
+import com.ssag.domain.feature.clean.entity.CleanStateEntity
+import com.ssag.domain.feature.clean.entity.RoomStateEntity
+import com.ssag.domain.feature.clean.entity.StudentEntity
 import com.ssag.ssag_admin.R
 import com.ssag.ssag_admin.base.observeWithLifecycle
 import com.ssag.ssag_admin.ui.theme.Blue900

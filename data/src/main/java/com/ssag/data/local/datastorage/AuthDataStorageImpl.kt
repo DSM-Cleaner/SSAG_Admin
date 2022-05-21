@@ -34,7 +34,7 @@ class AuthDataStorageImpl @Inject constructor(
                 it[ACCESS_TOKEN_KEY]
             }.firstOrNull()
         }
-        return "Bearer $token"
+        return token ?: ""
     }
 
     override fun clearDataStorage() {

@@ -2,11 +2,10 @@ package com.ssag.data.remote.datasource
 
 import com.ssag.data.remote.api.AuthApi
 import com.ssag.data.remote.request.ChangePasswordRequest
-import com.ssag.data.remote.request.LoginRequest
 import com.ssag.data.remote.request.toRequest
-import com.ssag.domain.auth.entity.TeacherEntity
-import com.ssag.domain.auth.parameter.ChangePasswordParameter
-import com.ssag.domain.auth.parameter.LoginParameter
+import com.ssag.domain.feature.auth.entity.TeacherEntity
+import com.ssag.domain.feature.auth.parameter.ChangePasswordParameter
+import com.ssag.domain.feature.auth.parameter.LoginParameter
 import javax.inject.Inject
 
 class AuthRemoteDataSourceImpl @Inject constructor(

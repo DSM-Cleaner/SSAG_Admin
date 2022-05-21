@@ -2,9 +2,9 @@ package com.ssag.data.remote.response
 
 import com.google.gson.annotations.SerializedName
 import com.ssag.data.toBoolean
-import com.ssag.domain.clean.entity.CleanStateEntity
-import com.ssag.domain.clean.entity.RoomStateEntity
-import com.ssag.domain.clean.entity.StudentEntity
+import com.ssag.domain.feature.clean.entity.CleanStateEntity
+import com.ssag.domain.feature.clean.entity.RoomStateEntity
+import com.ssag.domain.feature.clean.entity.StudentEntity
 
 data class FetchRoomStateResponse(
     @SerializedName("light") val light: Boolean,

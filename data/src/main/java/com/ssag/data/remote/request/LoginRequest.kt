@@ -1,7 +1,7 @@
 package com.ssag.data.remote.request
 
 import com.google.gson.annotations.SerializedName
-import com.ssag.domain.auth.parameter.LoginParameter
+import com.ssag.domain.feature.auth.parameter.LoginParameter
 
 data class LoginRequest(
     @SerializedName("name") val name: String,

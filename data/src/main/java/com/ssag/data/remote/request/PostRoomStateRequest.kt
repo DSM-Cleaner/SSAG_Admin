@@ -2,8 +2,8 @@ package com.ssag.data.remote.request
 
 import com.google.gson.annotations.SerializedName
 import com.ssag.data.toInt
-import com.ssag.domain.clean.entity.StudentEntity
-import com.ssag.domain.clean.parameter.PostCleanStateParameter
+import com.ssag.domain.feature.clean.entity.StudentEntity
+import com.ssag.domain.feature.clean.parameter.PostCleanStateParameter
 
 data class PostRoomStateRequest(
     @SerializedName("light") val light: Boolean,

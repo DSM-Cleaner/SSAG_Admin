@@ -1,7 +1,7 @@
 package com.ssag.ssag_admin.feature.changepassword
 
-import com.ssag.domain.auth.parameter.ChangePasswordParameter
-import com.ssag.domain.auth.usecase.ChangePasswordUseCase
+import com.ssag.domain.feature.auth.parameter.ChangePasswordParameter
+import com.ssag.domain.feature.auth.usecase.ChangePasswordUseCase
 import com.ssag.ssag_admin.base.BaseViewModel
 import com.ssag.ssag_admin.base.Event
 import dagger.hilt.android.lifecycle.HiltViewModel

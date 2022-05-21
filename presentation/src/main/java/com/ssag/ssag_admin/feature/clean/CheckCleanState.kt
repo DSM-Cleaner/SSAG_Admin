@@ -1,6 +1,6 @@
 package com.ssag.ssag_admin.feature.clean
 
-import com.ssag.domain.clean.entity.RoomStateEntity
+import com.ssag.domain.feature.clean.entity.RoomStateEntity
 import com.ssag.ssag_admin.base.State
 
 data class CheckCleanState(

@@ -2,8 +2,8 @@ package com.ssag.data.remote.datasource
 
 import com.ssag.data.remote.api.CleanApi
 import com.ssag.data.remote.request.toRequest
-import com.ssag.domain.clean.entity.RoomStateEntity
-import com.ssag.domain.clean.parameter.PostCleanStateParameter
+import com.ssag.domain.feature.clean.entity.RoomStateEntity
+import com.ssag.domain.feature.clean.parameter.PostCleanStateParameter
 import javax.inject.Inject
 
 class CleanRemoteDataSourceImpl @Inject constructor(

@@ -1,6 +1,6 @@
 package com.ssag.data.remote.response
 
-import com.ssag.domain.auth.entity.TeacherEntity
+import com.ssag.domain.feature.auth.entity.TeacherEntity
 
 data class LoginResponse(
     val id: Long,

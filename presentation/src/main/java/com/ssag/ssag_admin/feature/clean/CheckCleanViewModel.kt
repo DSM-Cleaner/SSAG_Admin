@@ -1,8 +1,8 @@
 package com.ssag.ssag_admin.feature.clean
 
-import com.ssag.domain.clean.parameter.PostCleanStateParameter
-import com.ssag.domain.clean.usecase.FetchRoomStateUseCase
-import com.ssag.domain.clean.usecase.PostCleanStateUseCase
+import com.ssag.domain.feature.clean.parameter.PostCleanStateParameter
+import com.ssag.domain.feature.clean.usecase.FetchRoomStateUseCase
+import com.ssag.domain.feature.clean.usecase.PostCleanStateUseCase
 import com.ssag.ssag_admin.base.BaseViewModel
 import com.ssag.ssag_admin.base.Event
 import com.ssag.ssag_admin.base.MutableEventFlow

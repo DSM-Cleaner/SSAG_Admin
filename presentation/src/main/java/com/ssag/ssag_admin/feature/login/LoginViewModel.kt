@@ -1,8 +1,8 @@
 package com.ssag.ssag_admin.feature.login
 
-import com.ssag.domain.auth.parameter.LoginParameter
-import com.ssag.domain.auth.usecase.LoginUseCase
-import com.ssag.domain.auth.usecase.LogoutUseCase
+import com.ssag.domain.feature.auth.parameter.LoginParameter
+import com.ssag.domain.feature.auth.usecase.LoginUseCase
+import com.ssag.domain.feature.auth.usecase.LogoutUseCase
 import com.ssag.ssag_admin.base.BaseViewModel
 import com.ssag.ssag_admin.base.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
