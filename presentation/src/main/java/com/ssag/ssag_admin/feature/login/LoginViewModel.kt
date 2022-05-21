@@ -1,6 +1,7 @@
 package com.ssag.ssag_admin.feature.login
 
 import com.ssag.domain.feature.auth.parameter.LoginParameter
+import com.ssag.domain.feature.auth.usecase.CheckNeedLoginUseCase
 import com.ssag.domain.feature.auth.usecase.LoginUseCase
 import com.ssag.domain.feature.auth.usecase.LogoutUseCase
 import com.ssag.ssag_admin.base.BaseViewModel
@@ -10,12 +11,23 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
+    private val checkNeedLoginUseCase: CheckNeedLoginUseCase,
     private val loginUseCase: LoginUseCase,
     private val logoutUseCase: LogoutUseCase
 ) : BaseViewModel<LoginState, LoginIntent, LoginViewModel.LoginEvent>() {
 
     override val initialState: LoginState
         get() = LoginState.initial()
+
+    suspend fun checkNeedLogin() {
+        kotlin.runCatching {
+            checkNeedLoginUseCase.execute(Unit)
+        }.onSuccess {
+            sendIntent(LoginIntent.SuccessLogin(it))
+        }.onFailure {
+            sendIntent(LoginIntent.FailLogin)
+        }
+    }
 
     suspend fun login() {
         if (!state.value.isLoading) {
@@ -55,6 +67,14 @@ class LoginViewModel @Inject constructor(
                         hasLogin = true,
                         teacherName = intent.teacherEntity.name,
                         startFloor = if (intent.teacherEntity.isManTeacher) 5 else 2
+                    )
+                )
+            }
+
+            is  LoginIntent.FailLogin -> {
+                setState(
+                    oldState.copy(
+                        hasLogin = false
                     )
                 )
             }

@@ -10,7 +10,7 @@ interface AuthRepository {
 
     suspend fun logout()
 
-    suspend fun checkNeedLogin()
+    suspend fun checkNeedLogin(): TeacherEntity
 
     suspend fun changePassword(changePasswordParameter: ChangePasswordParameter)
 }

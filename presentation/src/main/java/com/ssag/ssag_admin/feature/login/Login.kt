@@ -11,6 +11,7 @@ import androidx.compose.material.*
 import androidx.compose.material.ButtonDefaults.buttonColors
 import androidx.compose.material.TextFieldDefaults.textFieldColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -44,6 +45,10 @@ fun Login(navController: NavController, loginViewModel: LoginViewModel = hiltVie
     val coroutineScope = rememberCoroutineScope()
 
     val scaffoldState = rememberScaffoldState()
+
+    LaunchedEffect(Unit) {
+        loginViewModel.checkNeedLogin()
+    }
 
     Scaffold(scaffoldState = scaffoldState) {
         LoginContent(

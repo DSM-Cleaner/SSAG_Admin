@@ -33,12 +33,12 @@ class AuthRepositoryImpl @Inject constructor(
         authLocalDataSource.clearLocalData()
     }
 
-    override suspend fun checkNeedLogin() {
+    override suspend fun checkNeedLogin(): TeacherEntity {
         if (authLocalDataSource.isTokenEmpty()) {
             throw NeedLoginException()
         } else {
             val teacher = authLocalDataSource.fetchTeacher()
-            authRemoteDataSource.login(teacher)
+            return authRemoteDataSource.login(teacher).toEntity()
         }
     }
 
