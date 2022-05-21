@@ -10,5 +10,7 @@ interface AuthRepository {
 
     suspend fun logout()
 
+    suspend fun checkNeedLogin()
+
     suspend fun changePassword(changePasswordParameter: ChangePasswordParameter)
 }
