@@ -6,8 +6,10 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.ssag.domain.feature.auth.parameter.LoginParameter
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -18,6 +20,8 @@ class AuthDataStorageImpl @Inject constructor(
 
     companion object {
         private val ACCESS_TOKEN_KEY = stringPreferencesKey("access_token")
+        private val TEACHER_NAME_KEY = stringPreferencesKey("teacher_name")
+        private val TEACHER_PASSWORD_KEY = stringPreferencesKey("teacher_pass")
     }
 
     override fun setAccessToken(token: String) {
@@ -43,6 +47,25 @@ class AuthDataStorageImpl @Inject constructor(
                 it.clear()
             }
         }
+    }
+
+    override fun saveTeacher(loginParameter: LoginParameter) {
+        runBlocking(Dispatchers.IO) {
+            context.dataStore.edit {
+                it[TEACHER_NAME_KEY] = loginParameter.name
+                it[TEACHER_PASSWORD_KEY] = loginParameter.password
+            }
+        }
+    }
+
+    override fun fetchTeacher(): LoginParameter {
+        val teacher = runBlocking(Dispatchers.IO) {
+            context.dataStore.data.map {
+                LoginParameter(it[TEACHER_NAME_KEY] ?: "", it[TEACHER_PASSWORD_KEY] ?: "")
+            }.first()
+        }
+
+        return teacher
     }
 }
 

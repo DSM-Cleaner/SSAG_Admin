@@ -1,6 +1,7 @@
 package com.ssag.data.local.datasource
 
 import com.ssag.data.local.datastorage.AuthDataStorage
+import com.ssag.domain.feature.auth.parameter.LoginParameter
 import javax.inject.Inject
 
 class AuthLocalDataSourceImpl @Inject constructor(
@@ -12,5 +13,13 @@ class AuthLocalDataSourceImpl @Inject constructor(
 
     override fun clearLocalData() {
         authDataStorage.clearDataStorage()
+    }
+
+    override fun saveTeacher(loginParameter: LoginParameter) {
+
+    }
+
+    override fun fetchTeacher(): LoginParameter {
+        TODO("Not yet implemented")
     }
 }
