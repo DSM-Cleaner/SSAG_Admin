@@ -16,10 +16,9 @@ class AuthLocalDataSourceImpl @Inject constructor(
     }
 
     override fun saveTeacher(loginParameter: LoginParameter) {
-
+        authDataStorage.saveTeacher(loginParameter)
     }
 
-    override fun fetchTeacher(): LoginParameter {
-        TODO("Not yet implemented")
-    }
+    override fun fetchTeacher(): LoginParameter =
+        authDataStorage.fetchTeacher()
 }

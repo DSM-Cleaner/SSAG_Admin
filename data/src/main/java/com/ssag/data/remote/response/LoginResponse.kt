@@ -1,16 +1,9 @@
 package com.ssag.data.remote.response
 
-import com.ssag.domain.feature.auth.entity.TeacherEntity
+import com.google.gson.annotations.SerializedName
 
 data class LoginResponse(
-    val id: Long,
-    val name: String
-) {
-
-    fun toEntity() =
-        TeacherEntity(
-            id = id,
-            name = name,
-            isManTeacher = name == "박창수" || name == "조건웅"
-        )
-}
+    @SerializedName("authorization") val token: String,
+    @SerializedName("id") val id: Long,
+    @SerializedName("gender") val gender: Boolean
+)
