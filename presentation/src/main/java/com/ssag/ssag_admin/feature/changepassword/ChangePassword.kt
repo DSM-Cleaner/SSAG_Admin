@@ -159,6 +159,7 @@ fun ChangePasswordTextField(
         value = textValue,
         onValueChange = doOnValueChange,
         colors = TextFieldDefaults.textFieldColors(
+            backgroundColor = Color.White,
             textColor = Color.Black
         ),
         keyboardOptions = KeyboardOptions(
