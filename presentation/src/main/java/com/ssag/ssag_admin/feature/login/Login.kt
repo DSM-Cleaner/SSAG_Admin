@@ -72,15 +72,17 @@ fun Login(navController: NavController, loginViewModel: LoginViewModel = hiltVie
                 }
             }
         )
-    }
 
-    loginViewModel.event.observeWithLifecycle {
-        when (it) {
-            is LoginViewModel.LoginEvent.FailedLogin -> {
-                scaffoldState.snackbarHostState.showSnackbar("로그인을 실패했습니다.")
+        loginViewModel.event.observeWithLifecycle {
+            when (it) {
+                is LoginViewModel.LoginEvent.FailedLogin -> {
+                    scaffoldState.snackbarHostState.showSnackbar("로그인을 실패했습니다.")
+                }
             }
         }
     }
+
+
 }
 
 @Composable

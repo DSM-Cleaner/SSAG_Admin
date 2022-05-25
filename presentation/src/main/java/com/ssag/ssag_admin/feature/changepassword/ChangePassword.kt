@@ -166,7 +166,7 @@ fun ChangePasswordTextField(
         ),
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Password,
-            imeAction = ImeAction.Done
+            imeAction = if (isLastTextField) ImeAction.Done else ImeAction.Next
         ),
         keyboardActions = KeyboardActions(
             onDone = {
