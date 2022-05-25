@@ -79,8 +79,8 @@ fun ChangePassword(
 
                 is ChangePasswordViewModel.ChangePasswordEvent.ChangePasswordSuccess -> {
                     val successLoginComment = "비밀번호를 변경하였습니다."
-                    scaffoldState.snackbarHostState.showSnackbar(successLoginComment)
                     navController.popBackStack()
+                    scaffoldState.snackbarHostState.showSnackbar(successLoginComment)
                 }
             }
         }
