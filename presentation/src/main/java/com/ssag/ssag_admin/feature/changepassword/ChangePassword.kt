@@ -189,8 +189,8 @@ fun ChangePasswordButton(
         onClick = doOnChangePasswordClick,
         colors = buttonColors(backgroundColor = buttonColor),
         modifier = Modifier
-            .size(250.dp, 40.dp)
             .clip(RoundedCornerShape(15.dp))
+            .size(250.dp, 40.dp)
     ) {
         Text(text = buttonText)
     }

@@ -351,8 +351,8 @@ fun LoginButton(buttonText: String, loginState: LoginState, doOnLoginButtonClick
             contentColor = Color.White
         ),
         modifier = Modifier
-            .size(250.dp, 40.dp)
             .clip(RoundedCornerShape(15.dp))
+            .size(250.dp, 40.dp)
     ) {
         Text(text = text)
     }
