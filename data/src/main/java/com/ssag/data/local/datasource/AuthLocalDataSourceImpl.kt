@@ -8,6 +8,10 @@ class AuthLocalDataSourceImpl @Inject constructor(
     private val authDataStorage: AuthDataStorage
 ) : AuthLocalDataSource {
 
+    override fun saveToken(token: String) {
+        authDataStorage.setAccessToken(token)
+    }
+
     override fun isTokenEmpty(): Boolean =
         authDataStorage.fetchAccessToken().isEmpty()
 

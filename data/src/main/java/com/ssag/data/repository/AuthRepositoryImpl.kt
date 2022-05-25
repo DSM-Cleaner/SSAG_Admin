@@ -17,7 +17,11 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun login(loginParameter: LoginParameter): TeacherEntity {
         authLocalDataSource.saveTeacher(loginParameter)
-        return authRemoteDataSource.login(loginParameter).toEntity()
+
+        val loginResponse = authRemoteDataSource.login(loginParameter)
+        authLocalDataSource.saveToken(loginResponse.token)
+
+        return loginResponse.toEntity()
     }
 
     private fun LoginResponse.toEntity(): TeacherEntity {

@@ -24,7 +24,7 @@ fun SsagApp() {
         }
 
         composable(
-            AppNavigationItem.CheckClean.route,
+            AppNavigationItem.CheckClean.route + "/{isManTeacher}",
             arguments = listOf(navArgument("isManTeacher") {
                 defaultValue = true
                 type = NavType.BoolType

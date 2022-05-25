@@ -4,6 +4,8 @@ import com.ssag.domain.feature.auth.parameter.LoginParameter
 
 interface AuthLocalDataSource {
 
+    fun saveToken(token: String)
+
     fun isTokenEmpty(): Boolean
 
     fun clearLocalData()

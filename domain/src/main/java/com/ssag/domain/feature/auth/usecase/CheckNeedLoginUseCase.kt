@@ -9,7 +9,6 @@ class CheckNeedLoginUseCase @Inject constructor(
     private val authRepository: AuthRepository
 ) : UseCase<Unit, TeacherEntity>() {
 
-    override suspend fun execute(data: Unit): TeacherEntity {
-        TODO("Not yet implemented")
-    }
+    override suspend fun execute(data: Unit): TeacherEntity =
+        authRepository.checkNeedLogin()
 }

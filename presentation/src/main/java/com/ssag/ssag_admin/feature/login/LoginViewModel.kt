@@ -25,6 +25,7 @@ class LoginViewModel @Inject constructor(
         }.onSuccess {
             sendIntent(LoginIntent.SuccessLogin(it))
         }.onFailure {
+            it
             sendIntent(LoginIntent.FailLogin)
         }
     }
@@ -39,6 +40,7 @@ class LoginViewModel @Inject constructor(
             }.onSuccess {
                 sendIntent(LoginIntent.SuccessLogin(it))
             }.onFailure {
+                it
                 sendEvent(LoginEvent.FailedLogin)
             }.also {
                 sendIntent(LoginIntent.FinishLoading)
