@@ -135,7 +135,8 @@ fun ChangePasswordContent(
         ChangePasswordTextField(
             textValue = state.confirmPassword,
             doOnValueChange = doOnConfirmPasswordInput,
-            labelText = confirmPasswordText
+            labelText = confirmPasswordText,
+            isLastTextField = true
         )
 
         ChangePasswordButton(
@@ -152,7 +153,8 @@ fun ChangePasswordTextField(
     textValue: String,
     doOnValueChange: (String) -> Unit,
     labelText: String,
-    isError: Boolean = false
+    isError: Boolean = false,
+    isLastTextField: Boolean = false
 ) {
     val focusManager = LocalFocusManager.current
     OutlinedTextField(
@@ -168,7 +170,11 @@ fun ChangePasswordTextField(
         ),
         keyboardActions = KeyboardActions(
             onDone = {
-                focusManager.moveFocus(FocusDirection.Down)
+                if (isLastTextField) {
+                    focusManager.clearFocus()
+                } else {
+                    focusManager.moveFocus(FocusDirection.Down)
+                }
             }
         ),
         visualTransformation = PasswordVisualTransformation(),
