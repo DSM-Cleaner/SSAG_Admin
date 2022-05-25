@@ -12,5 +12,9 @@ interface AuthLocalDataSource {
 
     fun saveTeacher(loginParameter: LoginParameter)
 
+    fun saveTeacherId(id: Long)
+
     fun fetchTeacher(): LoginParameter
+
+    fun fetchTeacherId(): Long
 }

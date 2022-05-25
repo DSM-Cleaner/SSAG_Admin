@@ -23,6 +23,14 @@ class AuthLocalDataSourceImpl @Inject constructor(
         authDataStorage.saveTeacher(loginParameter)
     }
 
+    override fun saveTeacherId(id: Long) {
+        authDataStorage.saveTeacherId(id)
+    }
+
+    override fun fetchTeacherId(): Long =
+        authDataStorage.fetchTeacherId()
+
+
     override fun fetchTeacher(): LoginParameter =
         authDataStorage.fetchTeacher()
 }

@@ -6,6 +6,7 @@ import com.ssag.data.remote.response.LoginResponse
 import retrofit2.http.Body
 import retrofit2.http.PATCH
 import retrofit2.http.POST
+import retrofit2.http.Path
 
 interface AuthApi {
 
@@ -14,8 +15,9 @@ interface AuthApi {
         @Body request: LoginRequest
     ): LoginResponse
 
-    @PATCH("teacher/password")
+    @PATCH("teacher/password/{teacher_id}")
     suspend fun changePassword(
-        @Body request: ChangePasswordRequest
+        @Body request: ChangePasswordRequest,
+        @Path("teacher_id") teacherId: Long
     )
 }

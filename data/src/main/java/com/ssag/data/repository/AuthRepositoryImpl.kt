@@ -19,7 +19,10 @@ class AuthRepositoryImpl @Inject constructor(
         authLocalDataSource.saveTeacher(loginParameter)
 
         val loginResponse = authRemoteDataSource.login(loginParameter)
-        authLocalDataSource.saveToken(loginResponse.token)
+        authLocalDataSource.run {
+            saveToken(loginResponse.token)
+            saveTeacherId(loginResponse.id)
+        }
 
         return loginResponse.toEntity()
     }
@@ -47,6 +50,7 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
     override suspend fun changePassword(changePasswordParameter: ChangePasswordParameter) {
-        authRemoteDataSource.changePassword(changePasswordParameter)
+        val teacherId = authLocalDataSource.fetchTeacherId()
+        authRemoteDataSource.changePassword(changePasswordParameter, teacherId)
     }
 }

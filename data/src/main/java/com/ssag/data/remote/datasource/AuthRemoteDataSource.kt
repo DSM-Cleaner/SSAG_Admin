@@ -9,5 +9,5 @@ interface AuthRemoteDataSource {
 
     suspend fun login(loginParameter: LoginParameter): LoginResponse
 
-    suspend fun changePassword(changePasswordParameter: ChangePasswordParameter)
+    suspend fun changePassword(changePasswordParameter: ChangePasswordParameter, teacherId: Long)
 }

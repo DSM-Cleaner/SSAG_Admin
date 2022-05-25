@@ -16,9 +16,12 @@ class AuthRemoteDataSourceImpl @Inject constructor(
     override suspend fun login(loginParameter: LoginParameter): LoginResponse =
         authApi.login(loginParameter.toRequest())
 
-    override suspend fun changePassword(changePasswordParameter: ChangePasswordParameter) {
+    override suspend fun changePassword(
+        changePasswordParameter: ChangePasswordParameter,
+        teacherId: Long
+    ) {
         val currentPassword = changePasswordParameter.currentPassword
         val newPassword = changePasswordParameter.newPassword
-        authApi.changePassword(ChangePasswordRequest(currentPassword, newPassword))
+        authApi.changePassword(ChangePasswordRequest(currentPassword, newPassword), teacherId)
     }
 }

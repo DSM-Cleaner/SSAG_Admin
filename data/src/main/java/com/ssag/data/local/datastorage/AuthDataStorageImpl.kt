@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.ssag.domain.feature.auth.parameter.LoginParameter
@@ -22,6 +23,7 @@ class AuthDataStorageImpl @Inject constructor(
         private val ACCESS_TOKEN_KEY = stringPreferencesKey("access_token")
         private val TEACHER_NAME_KEY = stringPreferencesKey("teacher_name")
         private val TEACHER_PASSWORD_KEY = stringPreferencesKey("teacher_pass")
+        private val TEACHER_ID_KEY = longPreferencesKey("teacher_id")
     }
 
     override fun setAccessToken(token: String) {
@@ -58,6 +60,14 @@ class AuthDataStorageImpl @Inject constructor(
         }
     }
 
+    override fun saveTeacherId(id: Long) {
+        runBlocking(Dispatchers.IO) {
+            context.dataStore.edit {
+                it[TEACHER_ID_KEY] = id
+            }
+        }
+    }
+
     override fun fetchTeacher(): LoginParameter {
         val teacher = runBlocking(Dispatchers.IO) {
             context.dataStore.data.map {
@@ -66,6 +76,16 @@ class AuthDataStorageImpl @Inject constructor(
         }
 
         return teacher
+    }
+
+    override fun fetchTeacherId(): Long {
+        val teacherId = runBlocking(Dispatchers.IO) {
+            context.dataStore.data.map {
+                it[TEACHER_ID_KEY] ?: 0L
+            }.first()
+        }
+
+        return teacherId
     }
 }
 

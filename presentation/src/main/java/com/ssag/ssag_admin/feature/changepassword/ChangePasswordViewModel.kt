@@ -30,6 +30,7 @@ class ChangePasswordViewModel @Inject constructor(
             }.onSuccess {
                 sendEvent(ChangePasswordEvent.ChangePasswordSuccess)
             }.onFailure {
+                it
                 sendEvent(ChangePasswordEvent.ChangePasswordFail)
             }.also {
                 sendIntent(ChangePasswordIntent.FinishLoading)
