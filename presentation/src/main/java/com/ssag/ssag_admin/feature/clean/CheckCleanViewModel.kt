@@ -101,13 +101,13 @@ class CheckCleanViewModel @Inject constructor(
     }
 
     private fun LocalDate.isPersonalCheckDay() =
-        this.dayOfWeek.value.isTuesday() || this.dayOfWeek.value.isFriday()
+        this.isTuesday() || this.isFriday()
 
-    private fun Int.isTuesday(): Boolean =
-        this == 2
+    private fun LocalDate.isTuesday(): Boolean =
+        this.dayOfWeek.value == 2
 
-    private fun Int.isFriday(): Boolean =
-        this == 5
+    private fun LocalDate.isFriday(): Boolean =
+        this.dayOfWeek.value == 5
 
     fun moveToRoom(room: Int) {
         sendIntent(CheckCleanIntent.MoveToRoom(room))

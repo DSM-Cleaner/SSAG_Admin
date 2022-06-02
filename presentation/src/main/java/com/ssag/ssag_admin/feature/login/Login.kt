@@ -237,7 +237,12 @@ fun TeacherCardView(teacherName: String) {
     ) {
         Row(verticalAlignment = Alignment.Bottom) {
             val teacherText = "사감선생님"
-            Text(text = teacherName, color = Color.White, fontSize = 20.sp)
+            Text(
+                text = teacherName,
+                color = Color.White,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold
+            )
             Text(text = teacherText, color = Color.White)
         }
     }
