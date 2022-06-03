@@ -58,6 +58,11 @@ object Dependency {
         const val dataStorePreference = "androidx.datastore:datastore-preferences:${Version.dataStore}"
     }
 
+    object Mvi {
+        const val orbitCore = "org.orbit-mvi:orbit-core:${Version.orbit}"
+        const val orbitViewModel = "org.orbit-mvi:orbit-viewmodel:${Version.orbit}"
+    }
+
     object ThreeTenAndroidBackport {
         const val threeTenAbp = "com.jakewharton.threetenabp:threetenabp:${Version.threeTenAbp}"
     }

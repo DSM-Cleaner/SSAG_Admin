@@ -71,5 +71,8 @@ dependencies {
     implementation(Dependency.Network.okhttp)
     implementation(Dependency.Network.loggingInterceptor)
 
+    implementation(Dependency.Mvi.orbitCore)
+    implementation(Dependency.Mvi.orbitViewModel)
+
     implementation(Dependency.ThreeTenAndroidBackport.threeTenAbp)
 }

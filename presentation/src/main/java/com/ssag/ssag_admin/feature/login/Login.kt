@@ -41,7 +41,9 @@ import kotlinx.coroutines.launch
 @OptIn(InternalCoroutinesApi::class)
 @Composable
 fun Login(navController: NavController, loginViewModel: LoginViewModel = hiltViewModel()) {
-    val loginState = loginViewModel.state.collectAsState().value
+    val loginContainer = loginViewModel.container
+    val loginState = loginContainer.stateFlow.collectAsState().value
+    val loginSideEffect = loginContainer.sideEffectFlow
     val coroutineScope = rememberCoroutineScope()
 
     val scaffoldState = rememberScaffoldState()
@@ -73,10 +75,13 @@ fun Login(navController: NavController, loginViewModel: LoginViewModel = hiltVie
             }
         )
 
-        loginViewModel.event.observeWithLifecycle {
+        loginSideEffect.observeWithLifecycle {
             when (it) {
-                is LoginViewModel.LoginEvent.FailedLogin -> {
+                is LoginSideEffect.FailedLogin -> {
                     scaffoldState.snackbarHostState.showSnackbar("로그인을 실패했습니다.")
+                }
+                is LoginSideEffect.FailedAutoLogin -> {
+                    scaffoldState.snackbarHostState.showSnackbar("로그인이 필요합니다.")
                 }
             }
         }

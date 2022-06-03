@@ -20,6 +20,8 @@ object Version {
     const val lifecycle = "2.4.0"
     const val coroutine = "1.6.0"
 
+    const val orbit = "4.3.2"
+
     const val retrofit = "2.9.0"
     const val okhttp = "3.14.9"
 
