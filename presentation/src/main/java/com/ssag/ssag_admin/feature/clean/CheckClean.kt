@@ -43,7 +43,9 @@ fun CheckClean(
     checkCleanViewModel: CheckCleanViewModel = hiltViewModel(),
     isManTeacher: Boolean
 ) {
-    val checkCleanState = checkCleanViewModel.state.collectAsState().value
+    val checkCleanContainer = checkCleanViewModel.container
+    val checkCleanState = checkCleanContainer.stateFlow.collectAsState().value
+    val checkCleanSideEffect = checkCleanContainer.sideEffectFlow
 
     val scaffoldState = rememberScaffoldState()
 
@@ -160,12 +162,12 @@ fun CheckClean(
         }
     }
 
-    checkCleanViewModel.event.observeWithLifecycle {
+    checkCleanSideEffect.observeWithLifecycle {
         when (it) {
-            is CheckCleanViewModel.CheckCleanEvent.DoneSetRoom -> {
+            is CheckCleanSideEffect.DoneSetRoom -> {
                 checkCleanViewModel.fetchCleanState()
             }
-            is CheckCleanViewModel.CheckCleanEvent.PostRoomState -> {
+            is CheckCleanSideEffect.PostRoomState -> {
                 checkCleanViewModel.postCleanState()
             }
         }
