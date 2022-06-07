@@ -45,43 +45,31 @@ class CheckCleanViewModel @Inject constructor(
     }
 
     fun setTeacherGender(isMan: Boolean) = intent {
-        reduce {
-            state.reduceIsManTeacher(isMan)
-        }
+        reduce { state.reduceIsManTeacher(isMan) }
     }
 
     fun setRoomRange(isManTeacher: Boolean) = intent {
-        reduce {
-            state.reduceRoomRange(isManTeacher)
-        }
+        reduce { state.reduceRoomRange(isManTeacher) }
     }
 
     fun setStartRoom() = intent {
-        reduce {
-            state.reduceMoveRoom(room = state.roomList[0])
-        }
+        reduce { state.reduceMoveRoom(room = state.roomList[0]) }
         fetchCleanState()
     }
 
     fun checkDayIsPersonalCheckDay() = intent {
-        reduce {
-            state.reduceDayIsPersonalCheckDay()
-        }
+        reduce { state.reduceDayIsPersonalCheckDay() }
     }
 
     fun moveToRoom(room: Int) = intent {
-        reduce {
-            state.reduceMoveRoom(room)
-        }
+        reduce { state.reduceMoveRoom(room) }
         postCleanState()
         fetchCleanState()
     }
 
     fun moveToNextRoom() = intent {
         if (state.isNotLastRoom()) {
-            reduce {
-                state.reduceNextRoom()
-            }
+            reduce { state.reduceNextRoom() }
             postCleanState()
             fetchCleanState()
         }
@@ -89,96 +77,66 @@ class CheckCleanViewModel @Inject constructor(
 
     fun moveToBeforeRoom() = intent {
         if (state.isNotFirstRoom()) {
-            reduce {
-                state.reduceBeforeRoom()
-            }
+            reduce { state.reduceBeforeRoom() }
             postCleanState()
             fetchCleanState()
         }
     }
 
     fun showSelectRoomDialog() = intent {
-        reduce {
-            state.reduceShowSelectRoomDialog()
-        }
+        reduce { state.reduceShowSelectRoomDialog() }
     }
 
     fun dismissSelectRoomDialog() = intent {
-        reduce {
-            state.reduceDismissSelectRoomDialog()
-        }
+        reduce { state.reduceDismissSelectRoomDialog() }
         fetchCleanState()
     }
 
     fun setLightIsComplete() = intent {
-        reduce {
-            state.reduceLightIsComplete()
-        }
+        reduce { state.reduceLightIsComplete() }
     }
 
     fun setLightIsNotComplete() = intent {
-        reduce {
-            state.reduceLightIsNotComplete()
-        }
+        reduce { state.reduceLightIsNotComplete() }
     }
 
     fun setPlugIsComplete() = intent {
-        reduce {
-            state.reducePlugIsComplete()
-        }
+        reduce { state.reducePlugIsComplete() }
     }
 
     fun setPlugIsNotComplete() = intent {
-        reduce {
-            state.reducePlugIsNotComplete()
-        }
+        reduce { state.reducePlugIsNotComplete() }
     }
 
     fun setShoesAreComplete() = intent {
-        reduce {
-            state.reduceShoesAreComplete()
-        }
+        reduce { state.reduceShoesAreComplete() }
     }
 
     fun setShoesAreNotComplete() = intent {
-        reduce {
-            state.reduceShoesAreNotComplete()
-        }
+        reduce { state.reduceShoesAreNotComplete() }
     }
 
     fun setStudentBedIsClean(id: Long) = intent {
-        reduce {
-            state.reduceStudentBedIsClean(id)
-        }
+        reduce { state.reduceStudentBedIsClean(id) }
     }
 
     fun setStudentBedIsNotClean(id: Long) = intent {
-        reduce {
-            state.reduceStudentBedIsNotClean(id)
-        }
+        reduce { state.reduceStudentBedIsNotClean(id) }
     }
 
     fun setStudentClotheIsClean(id: Long) = intent {
-        reduce {
-            state.reduceStudentClothIsClean(id)
-        }
+        reduce { state.reduceStudentClothIsClean(id) }
     }
 
     fun setStudentClotheIsNotClean(id: Long) = intent {
-        reduce {
-            state.reduceStudentClothIsNotClean(id)
-        }
+        reduce { state.reduceStudentClothIsNotClean(id) }
     }
 
     fun setPersonalPlaceIsComplete(id: Long) = intent {
-        reduce {
-            state.reduceStudentPersonalPlaceIsComplete(id)
-        }
+        reduce { state.reduceStudentPersonalPlaceIsComplete(id) }
     }
 
     fun setPersonalPlaceIsNotComplete(id: Long) = intent {
-        reduce {
-            state.reduceStudentPersonalPlaceIsNotComplete(id)
-        }
+        reduce { state.reduceStudentPersonalPlaceIsNotComplete(id) }
     }
 }

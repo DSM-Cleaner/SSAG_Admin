@@ -51,9 +51,7 @@ class LoginViewModel @Inject constructor(
     }
 
     private fun TeacherEntity.setTeacher() = intent {
-        reduce {
-            state.reduceSetTeacher(this@setTeacher)
-        }
+        reduce { state.reduceSetTeacher(this@setTeacher) }
     }
 
     private fun startLoading() = intent {
