@@ -35,7 +35,9 @@ fun ChangePassword(
     navController: NavController,
     changePasswordViewModel: ChangePasswordViewModel = hiltViewModel()
 ) {
-    val changePasswordState = changePasswordViewModel.state.collectAsState().value
+    val changePasswordContainer = changePasswordViewModel.container
+    val changePasswordState = changePasswordContainer.stateFlow.collectAsState().value
+    val changePasswordSideEffect = changePasswordContainer.sideEffectFlow
 
     val coroutineScope = rememberCoroutineScope()
 
@@ -65,19 +67,19 @@ fun ChangePassword(
             }
         )
 
-        changePasswordViewModel.event.observeWithLifecycle {
+        changePasswordSideEffect.observeWithLifecycle {
             when (it) {
-                is ChangePasswordViewModel.ChangePasswordEvent.ChangePasswordFail -> {
+                is ChangePasswordSideEffect.ChangePasswordFail -> {
                     val changePasswordFailComment = "비밀번호 변경을 실패했습니다."
                     scaffoldState.snackbarHostState.showSnackbar(changePasswordFailComment)
                 }
 
-                is ChangePasswordViewModel.ChangePasswordEvent.NotDoneInput -> {
+                is ChangePasswordSideEffect.NotDoneInput -> {
                     val notDoneInputComment = "모든 정보를 입력해주세요"
                     scaffoldState.snackbarHostState.showSnackbar(notDoneInputComment)
                 }
 
-                is ChangePasswordViewModel.ChangePasswordEvent.ChangePasswordSuccess -> {
+                is ChangePasswordSideEffect.ChangePasswordSuccess -> {
                     val successLoginComment = "비밀번호를 변경하였습니다."
                     navController.popBackStack()
                     scaffoldState.snackbarHostState.showSnackbar(successLoginComment)
