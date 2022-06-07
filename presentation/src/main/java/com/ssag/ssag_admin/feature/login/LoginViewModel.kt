@@ -52,32 +52,28 @@ class LoginViewModel @Inject constructor(
 
     private fun TeacherEntity.setTeacher() = intent {
         reduce {
-            state.copy(
-                hasLogin = true,
-                teacherName = this@setTeacher.name,
-                startFloor = if (this@setTeacher.isManTeacher) 5 else 2
-            )
+            state.reduceSetTeacher(this@setTeacher)
         }
     }
 
     private fun startLoading() = intent {
-        reduce { state.copy(isLoading = true) }
+        reduce { state.reduceStartLoading() }
     }
 
     private fun finishLoading() = intent {
-        reduce { state.copy(isLoading = false) }
+        reduce { state.reduceFinishLoading() }
     }
 
     fun inputName(name: String) = intent {
-        reduce { state.copy(name = name) }
+        reduce { state.reduceInputName(name) }
     }
 
     fun inputPassword(password: String) = intent {
-        reduce { state.copy(password = password) }
+        reduce { state.reduceInputPassword(password) }
     }
 
     suspend fun logout() = intent {
         logoutUseCase.execute(Unit)
-        reduce { state.copy(hasLogin = false, teacherName = "", startFloor = 0) }
+        reduce { state.reduceLogout() }
     }
 }
