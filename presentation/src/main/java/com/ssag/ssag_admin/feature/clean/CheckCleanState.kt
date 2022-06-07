@@ -7,6 +7,8 @@ data class CheckCleanState(
     val roomNumber: Int,
     val beforeRoomNumber: Int,
     val nextRoomNumber: Int,
+    val roomIndex: Int,
+    val roomList: List<Int>,
     val showSelectRoomDialog: Boolean,
     val roomState: RoomStateEntity,
     val isPersonalCheckDay: Boolean,
@@ -20,6 +22,8 @@ data class CheckCleanState(
                 roomNumber = 0,
                 beforeRoomNumber = 0,
                 nextRoomNumber = 0,
+                roomIndex = 0,
+                roomList = emptyList(),
                 showSelectRoomDialog = false,
                 isPersonalCheckDay = false,
                 isManTeacher = true,
@@ -31,6 +35,4 @@ data class CheckCleanState(
                 )
             )
     }
-
-
 }

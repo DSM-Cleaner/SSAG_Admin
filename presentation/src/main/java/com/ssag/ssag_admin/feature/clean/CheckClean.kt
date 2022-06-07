@@ -57,7 +57,10 @@ fun CheckClean(
     }
 
     LaunchedEffect(checkCleanState.isManTeacher) {
-        checkCleanViewModel.setStartRoom()
+        checkCleanViewModel.run {
+            setRoomRange(checkCleanState.isManTeacher)
+            setStartRoom()
+        }
     }
 
     Scaffold(
@@ -81,7 +84,7 @@ fun CheckClean(
                     .fillMaxWidth()
                     .padding(10.dp, 0.dp)
             ) {
-                if (checkCleanViewModel.isNotFirstRoom()) {
+                if (checkCleanState.isNotFirstRoom()) {
                     CheckCleanMoveRoomButton(room = checkCleanState.beforeRoomNumber) {
                         checkCleanViewModel.moveToBeforeRoom()
                     }
@@ -89,7 +92,7 @@ fun CheckClean(
                     Spacer(modifier = Modifier.width(150.dp))
                 }
 
-                if (checkCleanViewModel.isNotLastRoom()) {
+                if (checkCleanState.isNotLastRoom()) {
                     CheckCleanMoveRoomButton(room = checkCleanState.nextRoomNumber) {
                         checkCleanViewModel.moveToNextRoom()
                     }
@@ -141,7 +144,7 @@ fun CheckClean(
             doOnPersonalPlaceCompleted = { studentId ->
                 checkCleanViewModel.setPersonalPlaceIsComplete(studentId)
             },
-            rooms = checkCleanViewModel.fetchRooms(),
+            rooms = checkCleanState.roomList,
             doOnRoomSelect = { room ->
                 checkCleanViewModel.moveToRoom(room)
             },
@@ -151,24 +154,13 @@ fun CheckClean(
         )
     }
 
-    checkCleanViewModel.failedEvent.debounce(300).observeWithLifecycle {
+    checkCleanSideEffect.debounce(300).observeWithLifecycle {
         when (it) {
-            is CheckCleanViewModel.CheckCleanFailEvent.PostFail -> {
+            is CheckCleanSideEffect.PostFail -> {
                 scaffoldState.snackbarHostState.showSnackbar("청소상태를 등록하지 못하였습니다.")
             }
-            is CheckCleanViewModel.CheckCleanFailEvent.FetchFail -> {
+            is CheckCleanSideEffect.FetchFail -> {
                 scaffoldState.snackbarHostState.showSnackbar("호실정보를 읽어오지 못하였습니다.")
-            }
-        }
-    }
-
-    checkCleanSideEffect.observeWithLifecycle {
-        when (it) {
-            is CheckCleanSideEffect.DoneSetRoom -> {
-                checkCleanViewModel.fetchCleanState()
-            }
-            is CheckCleanSideEffect.PostRoomState -> {
-                checkCleanViewModel.postCleanState()
             }
         }
     }
@@ -649,7 +641,9 @@ fun CheckCleanContentPreview() {
             isPersonalCheckDay = true,
             isManTeacher = true,
             nextRoomNumber = 0,
-            beforeRoomNumber = 0
+            beforeRoomNumber = 0,
+            roomList = emptyList(),
+            roomIndex = 0
         ),
         doOnStudentBedIsClean = {},
         doOnStudentBedIsNotClean = {},
