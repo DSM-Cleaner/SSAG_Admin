@@ -21,7 +21,7 @@ class CheckCleanViewModel @Inject constructor(
     override val container: Container<CheckCleanState, CheckCleanSideEffect> =
         container(CheckCleanState.initial())
 
-    fun fetchCleanState() = intent {
+    private fun fetchCleanState() = intent {
         kotlin.runCatching {
             fetchRoomStateUseCase.execute(state.roomNumber)
         }.onSuccess { roomState ->
@@ -33,7 +33,7 @@ class CheckCleanViewModel @Inject constructor(
         }
     }
 
-    fun postCleanState() = intent {
+    private fun postCleanState() = intent {
         kotlin.runCatching {
             val parameter = state.fetchPostCleanParameter()
             postCleanStateUseCase.execute(parameter)
