@@ -1,19 +1,24 @@
 package com.ssag.ssag_admin.feature.changepassword
 
+import androidx.lifecycle.ViewModel
 import com.ssag.domain.feature.auth.parameter.ChangePasswordParameter
 import com.ssag.domain.feature.auth.usecase.ChangePasswordUseCase
 import com.ssag.ssag_admin.base.BaseViewModel
 import com.ssag.ssag_admin.base.Event
+import com.ssag.ssag_admin.feature.login.LoginState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import org.orbitmvi.orbit.Container
+import org.orbitmvi.orbit.ContainerHost
+import org.orbitmvi.orbit.viewmodel.container
 import javax.inject.Inject
 
 @HiltViewModel
 class ChangePasswordViewModel @Inject constructor(
     private val changePasswordUseCase: ChangePasswordUseCase
-) : BaseViewModel<ChangePasswordState, ChangePasswordIntent, ChangePasswordViewModel.ChangePasswordEvent>() {
+) : ContainerHost<ChangePasswordState, ChangePasswordSideEffect>, ViewModel() {
 
-    override val initialState: ChangePasswordState
-        get() = ChangePasswordState.initial()
+    override val container: Container<ChangePasswordState, ChangePasswordSideEffect> =
+        container(ChangePasswordState.initial())
 
     suspend fun changePassword() {
         if (state.value.isDoneInput()) {
@@ -30,7 +35,6 @@ class ChangePasswordViewModel @Inject constructor(
             }.onSuccess {
                 sendEvent(ChangePasswordEvent.ChangePasswordSuccess)
             }.onFailure {
-                it
                 sendEvent(ChangePasswordEvent.ChangePasswordFail)
             }.also {
                 sendIntent(ChangePasswordIntent.FinishLoading)
