@@ -77,17 +77,16 @@ fun CheckClean(
                 Snackbar(backgroundColor = ErrorColor, snackbarData = data)
             }
         },
-        floatingActionButton = {
-            CheckCleanMoveRoomFloatingButton(
-                checkCleanState = checkCleanState,
-                doOnNextRoomClick = { checkCleanViewModel.moveToNextRoom() },
-                doOnBeforeRoomClick = { checkCleanViewModel.moveToBeforeRoom() }
-            )
-        },
         floatingActionButtonPosition = FabPosition.Center
     ) {
         CheckCleanContent(
             checkCleanState = checkCleanState,
+            doOnNextRoomClick = {
+                checkCleanViewModel.moveToNextRoom()
+            },
+            doOnBeforeRoomClick = {
+                checkCleanViewModel.moveToBeforeRoom()
+            },
             doOnStudentBedIsClean = { studentId ->
                 checkCleanViewModel.setStudentBedIsClean(studentId)
             },
@@ -197,7 +196,7 @@ fun CheckCleanTopBarContent(
 }
 
 @Composable
-fun CheckCleanMoveRoomFloatingButton(
+fun CheckCleanMoveRoomFloatingButtons(
     checkCleanState: CheckCleanState,
     doOnNextRoomClick: () -> Unit,
     doOnBeforeRoomClick: () -> Unit
@@ -206,10 +205,10 @@ fun CheckCleanMoveRoomFloatingButton(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(10.dp, 0.dp)
+            .padding(10.dp, 10.dp)
     ) {
         if (checkCleanState.isNotFirstRoom()) {
-            CheckCleanMoveRoomButton(
+            CheckCleanMoveRoomFloatingButtons(
                 room = checkCleanState.beforeRoomNumber,
                 doOnMoveRoomButtonClick = doOnBeforeRoomClick
             )
@@ -218,7 +217,7 @@ fun CheckCleanMoveRoomFloatingButton(
         }
 
         if (checkCleanState.isNotLastRoom()) {
-            CheckCleanMoveRoomButton(
+            CheckCleanMoveRoomFloatingButtons(
                 room = checkCleanState.nextRoomNumber,
                 doOnMoveRoomButtonClick = doOnNextRoomClick
             )
@@ -232,6 +231,8 @@ fun CheckCleanMoveRoomFloatingButton(
 fun CheckCleanContent(
     checkCleanState: CheckCleanState,
     rooms: List<Int>,
+    doOnNextRoomClick: () -> Unit,
+    doOnBeforeRoomClick: () -> Unit,
     doOnStudentBedIsNotClean: (Long) -> Unit,
     doOnStudentBedIsClean: (Long) -> Unit,
     doOnStudentClotheIsNotClean: (Long) -> Unit,
@@ -245,57 +246,65 @@ fun CheckCleanContent(
     doOnSelectRoomDialogDismiss: () -> Unit
 ) {
     val scrollState = rememberScrollState()
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .verticalScroll(scrollState)
-            .padding(10.dp)
-    ) {
-        Text(
-            text = "통과되지 않은 항목을 체크해 주세요.",
-            textAlign = TextAlign.End,
-            fontSize = 13.sp,
+    Column(verticalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxSize()) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(0.dp, 0.dp, 10.dp, 5.dp)
-        )
+                .verticalScroll(scrollState)
+                .padding(10.dp)
+        ) {
+            Text(
+                text = "통과되지 않은 항목을 체크해 주세요.",
+                textAlign = TextAlign.End,
+                fontSize = 13.sp,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(0.dp, 0.dp, 10.dp, 5.dp)
+            )
 
-        CheckCleanStudent(
+            CheckCleanStudent(
+                checkCleanState = checkCleanState,
+                doOnStudentBedIsNotClean = doOnStudentBedIsNotClean,
+                doOnStudentBedIsClean = doOnStudentBedIsClean,
+                doOnStudentClotheIsNotClean = doOnStudentClotheIsNotClean,
+                doOnStudentClotheIsClean = doOnStudentClotheIsClean
+            )
+
+
+            Spacer(modifier = Modifier.height(15.dp))
+
+            CheckCleanRoom(
+                roomState = checkCleanState.roomState,
+                doOnLightValueChanged = doOnLightValueChanged,
+                doOnPlugValueChanged = doOnPlugValueChanged,
+                doOnShoesValueChanged = doOnShoesValueChanged
+            )
+
+            Spacer(modifier = Modifier.height(15.dp))
+
+            if (checkCleanState.isPersonalCheckDay) {
+                CheckCleanPersonalSpace(
+                    students = checkCleanState.roomState.students,
+                    doOnPersonalPlaceCompleted = doOnPersonalPlaceCompleted,
+                    doOnPersonalPlaceNotCompleted = doOnPersonalPlaceNotCompleted
+                )
+            }
+
+            if (checkCleanState.showSelectRoomDialog) {
+                SelectRoomDialog(
+                    roomNumber = checkCleanState.roomNumber,
+                    roomRange = rooms,
+                    doOnRoomSelect = doOnRoomSelect,
+                    doOnSelectRoomDialogDismiss = doOnSelectRoomDialogDismiss
+                )
+            }
+        }
+
+        CheckCleanMoveRoomFloatingButtons(
             checkCleanState = checkCleanState,
-            doOnStudentBedIsNotClean = doOnStudentBedIsNotClean,
-            doOnStudentBedIsClean = doOnStudentBedIsClean,
-            doOnStudentClotheIsNotClean = doOnStudentClotheIsNotClean,
-            doOnStudentClotheIsClean = doOnStudentClotheIsClean
+            doOnNextRoomClick = doOnNextRoomClick,
+            doOnBeforeRoomClick = doOnBeforeRoomClick
         )
-
-
-        Spacer(modifier = Modifier.height(15.dp))
-
-        CheckCleanRoom(
-            roomState = checkCleanState.roomState,
-            doOnLightValueChanged = doOnLightValueChanged,
-            doOnPlugValueChanged = doOnPlugValueChanged,
-            doOnShoesValueChanged = doOnShoesValueChanged
-        )
-
-        Spacer(modifier = Modifier.height(15.dp))
-
-        if (checkCleanState.isPersonalCheckDay) {
-            CheckCleanPersonalSpace(
-                students = checkCleanState.roomState.students,
-                doOnPersonalPlaceCompleted = doOnPersonalPlaceCompleted,
-                doOnPersonalPlaceNotCompleted = doOnPersonalPlaceNotCompleted
-            )
-        }
-
-        if (checkCleanState.showSelectRoomDialog) {
-            SelectRoomDialog(
-                roomNumber = checkCleanState.roomNumber,
-                roomRange = rooms,
-                doOnRoomSelect = doOnRoomSelect,
-                doOnSelectRoomDialogDismiss = doOnSelectRoomDialogDismiss
-            )
-        }
     }
 }
 
@@ -563,7 +572,7 @@ fun CleanToggleButton(isChecked: Boolean, onCheckValueChange: (Boolean) -> Unit)
 }
 
 @Composable
-fun CheckCleanMoveRoomButton(room: Int, doOnMoveRoomButtonClick: () -> Unit) {
+fun CheckCleanMoveRoomFloatingButtons(room: Int, doOnMoveRoomButtonClick: () -> Unit) {
     Button(
         onClick = doOnMoveRoomButtonClick,
         shape = RoundedCornerShape(15.dp),
@@ -663,6 +672,8 @@ fun CheckCleanContentPreview() {
             roomList = emptyList(),
             roomIndex = 0
         ),
+        doOnNextRoomClick = {},
+        doOnBeforeRoomClick = {},
         doOnStudentBedIsClean = {},
         doOnStudentBedIsNotClean = {},
         doOnStudentClotheIsClean = {},
