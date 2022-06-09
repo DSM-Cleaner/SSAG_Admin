@@ -16,7 +16,7 @@ data class FetchRoomStateResponse(
     data class StudentResponse(
         @SerializedName("id") val id: Long,
         @SerializedName("bed") val bed: String,
-        @SerializedName("gcn") val gcn: Int,
+        @SerializedName("user_id") val gcn: Int,
         @SerializedName("name") val name: String,
         @SerializedName("bedding") val bedding: Int,
         @SerializedName("clothes") val clothes: Int,

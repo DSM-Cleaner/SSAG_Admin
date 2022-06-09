@@ -1,6 +1,7 @@
 package com.ssag.ssag_admin.feature.clean
 
 import androidx.lifecycle.ViewModel
+import com.ssag.domain.feature.clean.entity.RoomStateEntity
 import com.ssag.domain.feature.clean.usecase.FetchRoomStateUseCase
 import com.ssag.domain.feature.clean.usecase.PostCleanStateUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,18 +25,16 @@ class CheckCleanViewModel @Inject constructor(
     private fun fetchCleanState() = intent {
         kotlin.runCatching {
             fetchRoomStateUseCase.execute(state.roomNumber)
-        }.onSuccess { roomState ->
-            reduce {
-                state.reduceSetRoomState(roomState)
-            }
         }.onFailure {
             postSideEffect(CheckCleanSideEffect.FetchFail)
+        }.also { roomState ->
+            reduce { state.reduceSetRoomState(roomState.getOrDefault(RoomStateEntity.default())) }
         }
     }
 
-    private fun postCleanState() = intent {
+    private fun postCleanState(postRoomState: CheckCleanState) = intent {
         kotlin.runCatching {
-            val parameter = state.fetchPostCleanParameter()
+            val parameter = postRoomState.fetchPostCleanParameter()
             postCleanStateUseCase.execute(parameter)
         }.onSuccess {
 
@@ -53,7 +52,7 @@ class CheckCleanViewModel @Inject constructor(
     }
 
     fun setStartRoom() = intent {
-        reduce { state.reduceMoveRoom(room = state.roomList[0]) }
+        reduce { state.reduceMoveRoom(state.roomList[0]) }
         fetchCleanState()
     }
 
@@ -63,27 +62,30 @@ class CheckCleanViewModel @Inject constructor(
 
     fun moveToRoom(room: Int) = intent {
         reduce { state.reduceMoveRoom(room) }
-        postCleanState()
+    }
+
+    fun doOnSelectRoom() {
         fetchCleanState()
     }
 
     fun moveToNextRoom() = intent {
+        postCleanState(state)
         if (state.isNotLastRoom()) {
             reduce { state.reduceNextRoom() }
-            postCleanState()
             fetchCleanState()
         }
     }
 
     fun moveToBeforeRoom() = intent {
+        postCleanState(state)
         if (state.isNotFirstRoom()) {
             reduce { state.reduceBeforeRoom() }
-            postCleanState()
             fetchCleanState()
         }
     }
 
     fun showSelectRoomDialog() = intent {
+        postCleanState(state)
         reduce { state.reduceShowSelectRoomDialog() }
     }
 

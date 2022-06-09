@@ -13,18 +13,22 @@ private val fifthFloorRooms = 501..523
 fun CheckCleanState.reduceSetRoomState(roomState: RoomStateEntity): CheckCleanState =
     this.copy(roomState = roomState)
 
-fun CheckCleanState.reduceRoomRange(isManTeacher: Boolean): CheckCleanState =
-    this.copy(
-        roomList =
+fun CheckCleanState.reduceRoomRange(isManTeacher: Boolean): CheckCleanState {
+    val roomList =
         if (isManTeacher) fifthFloorRooms + fourthFloorRooms + thirdFloorRooms + secondFloorRooms
-        else secondFloorRooms + thirdFloorRooms + fourthFloorRooms + fifthFloorRooms,
+        else secondFloorRooms + thirdFloorRooms + fourthFloorRooms + fifthFloorRooms
+    return this.copy(
+        roomList = roomList,
         roomIndex = 0
     )
+}
+
 
 fun CheckCleanState.reduceMoveRoom(room: Int): CheckCleanState {
     val roomIndex = roomList.indexOf(room)
-    val beforeRoom = if (isNotFirstRoom()) roomList[roomIndex - 1] else 0
-    val nextRoom = if (isNotLastRoom()) roomList[roomIndex + 1] else 0
+    val beforeRoom = if (isNotFirstRoom() && roomIndex > 0) roomList[roomIndex - 1] else 0
+    val nextRoom =
+        if (isNotLastRoom() && roomIndex < roomList.size - 1) roomList[roomIndex + 1] else 0
     return this.copy(
         beforeRoomNumber = beforeRoom,
         roomNumber = room,
@@ -35,7 +39,7 @@ fun CheckCleanState.reduceMoveRoom(room: Int): CheckCleanState {
 
 fun CheckCleanState.reduceNextRoom(): CheckCleanState {
     val newRoomIndex = roomIndex + 1
-    val nextRoom = if (isLastRoom()) 0 else roomList[newRoomIndex]
+    val nextRoom = if (nextRoomIsLastRoom()) 0 else roomList[newRoomIndex + 1]
     return copy(
         roomNumber = roomList[newRoomIndex],
         nextRoomNumber = nextRoom,
@@ -46,7 +50,7 @@ fun CheckCleanState.reduceNextRoom(): CheckCleanState {
 
 fun CheckCleanState.reduceBeforeRoom(): CheckCleanState {
     val newRoomIndex = roomIndex - 1
-    val beforeRoom = if (isFirstRoom()) 0 else roomList[newRoomIndex]
+    val beforeRoom = if (beforeRoomIsFirstRoom()) 0 else roomList[newRoomIndex - 1]
     return this.copy(
         roomNumber = roomList[newRoomIndex],
         beforeRoomNumber = beforeRoom,
@@ -61,11 +65,11 @@ fun CheckCleanState.isNotFirstRoom(): Boolean =
 fun CheckCleanState.isNotLastRoom(): Boolean =
     roomIndex < roomList.size - 1
 
-private fun CheckCleanState.isFirstRoom(): Boolean =
-    roomIndex == 0
+private fun CheckCleanState.beforeRoomIsFirstRoom(): Boolean =
+    roomIndex <= 1
 
-private fun CheckCleanState.isLastRoom(): Boolean =
-    roomIndex == roomList.size - 1
+private fun CheckCleanState.nextRoomIsLastRoom(): Boolean =
+    roomIndex >= roomList.size - 2
 
 
 fun CheckCleanState.reduceIsManTeacher(isMan: Boolean) =

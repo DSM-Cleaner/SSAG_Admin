@@ -5,4 +5,16 @@ data class RoomStateEntity(
     val plugIsNotComplete: Boolean,
     val shoesAreNotComplete: Boolean,
     val students: List<StudentEntity>
-)
+) {
+
+    companion object {
+
+        fun default(): RoomStateEntity =
+            RoomStateEntity(
+                lightIsNotComplete = false,
+                plugIsNotComplete = false,
+                shoesAreNotComplete = false,
+                students = emptyList()
+            )
+    }
+}

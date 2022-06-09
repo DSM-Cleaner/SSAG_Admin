@@ -9,9 +9,10 @@ import retrofit2.http.Path
 
 interface CleanApi {
 
-    @GET("cleaning/{roomId}")
+    @GET("cleaning/{roomId}/day/{day}")
     suspend fun fetchRoomState(
-        @Path("roomId") roomId: Int
+        @Path("roomId") roomId: Int,
+        @Path("day") dayOfWeek: String
     ): FetchRoomStateResponse
 
     @POST("cleaning/check/{roomId}")

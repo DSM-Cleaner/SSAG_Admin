@@ -58,7 +58,7 @@ fun CheckClean(
 
     LaunchedEffect(checkCleanState.isManTeacher) {
         checkCleanViewModel.run {
-            setRoomRange(checkCleanState.isManTeacher)
+            setRoomRange(isManTeacher)
             setStartRoom()
         }
     }
@@ -78,28 +78,11 @@ fun CheckClean(
             }
         },
         floatingActionButton = {
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp, 0.dp)
-            ) {
-                if (checkCleanState.isNotFirstRoom()) {
-                    CheckCleanMoveRoomButton(room = checkCleanState.beforeRoomNumber) {
-                        checkCleanViewModel.moveToBeforeRoom()
-                    }
-                } else {
-                    Spacer(modifier = Modifier.width(150.dp))
-                }
-
-                if (checkCleanState.isNotLastRoom()) {
-                    CheckCleanMoveRoomButton(room = checkCleanState.nextRoomNumber) {
-                        checkCleanViewModel.moveToNextRoom()
-                    }
-                } else {
-                    Spacer(modifier = Modifier.width(150.dp))
-                }
-            }
+            CheckCleanMoveRoomFloatingButton(
+                checkCleanState = checkCleanState,
+                doOnNextRoomClick = { checkCleanViewModel.moveToNextRoom() },
+                doOnBeforeRoomClick = { checkCleanViewModel.moveToBeforeRoom() }
+            )
         },
         floatingActionButtonPosition = FabPosition.Center
     ) {
@@ -149,7 +132,10 @@ fun CheckClean(
                 checkCleanViewModel.moveToRoom(room)
             },
             doOnSelectRoomDialogDismiss = {
-                checkCleanViewModel.dismissSelectRoomDialog()
+                checkCleanViewModel.run {
+                    doOnSelectRoom()
+                    dismissSelectRoomDialog()
+                }
             }
         )
     }
@@ -208,6 +194,38 @@ fun CheckCleanTopBarContent(
         contentColor = Color.White,
         elevation = 12.dp
     )
+}
+
+@Composable
+fun CheckCleanMoveRoomFloatingButton(
+    checkCleanState: CheckCleanState,
+    doOnNextRoomClick: () -> Unit,
+    doOnBeforeRoomClick: () -> Unit
+) {
+    Row(
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(10.dp, 0.dp)
+    ) {
+        if (checkCleanState.isNotFirstRoom()) {
+            CheckCleanMoveRoomButton(
+                room = checkCleanState.beforeRoomNumber,
+                doOnMoveRoomButtonClick = doOnBeforeRoomClick
+            )
+        } else {
+            Spacer(modifier = Modifier.width(150.dp))
+        }
+
+        if (checkCleanState.isNotLastRoom()) {
+            CheckCleanMoveRoomButton(
+                room = checkCleanState.nextRoomNumber,
+                doOnMoveRoomButtonClick = doOnNextRoomClick
+            )
+        } else {
+            Spacer(modifier = Modifier.width(150.dp))
+        }
+    }
 }
 
 @Composable

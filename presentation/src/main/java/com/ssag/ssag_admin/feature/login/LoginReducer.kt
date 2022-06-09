@@ -6,7 +6,8 @@ fun LoginState.reduceSetTeacher(teacher: TeacherEntity) =
     this.copy(
         hasLogin = true,
         teacherName = teacher.name,
-        startFloor = if (teacher.isManTeacher) 5 else 2
+        startFloor = if (teacher.isManTeacher) 5 else 2,
+        isManTeacher = teacher.isManTeacher
     )
 
 fun LoginState.reduceStartLoading() =
