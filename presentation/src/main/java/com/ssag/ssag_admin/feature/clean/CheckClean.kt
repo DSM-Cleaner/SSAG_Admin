@@ -246,12 +246,13 @@ fun CheckCleanContent(
     doOnSelectRoomDialogDismiss: () -> Unit
 ) {
     val scrollState = rememberScrollState()
-    Column(verticalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxSize()) {
+    Column(verticalArrangement = Arrangement.Bottom, modifier = Modifier.fillMaxSize()) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .verticalScroll(scrollState)
                 .padding(10.dp)
+                .fillMaxSize()
         ) {
             Text(
                 text = "통과되지 않은 항목을 체크해 주세요.",

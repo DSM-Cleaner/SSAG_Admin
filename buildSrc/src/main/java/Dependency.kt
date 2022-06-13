@@ -20,6 +20,8 @@ object Dependency {
         const val composeNumberPicker =
             "com.chargemap.compose:numberpicker:${Version.composeNumberPicker}"
         const val composeTooling = "androidx.compose.ui:ui-tooling:${Version.jetpackCompose}"
+        const val composeConstraintLayout =
+            "androidx.constraintlayout:constraintlayout-compose:${Version.composeConstraintLayout}"
     }
 
     object Lifecycle {
@@ -55,7 +57,8 @@ object Dependency {
 
     object Local {
         const val dataStore = "androidx.datastore:datastore:${Version.dataStore}"
-        const val dataStorePreference = "androidx.datastore:datastore-preferences:${Version.dataStore}"
+        const val dataStorePreference =
+            "androidx.datastore:datastore-preferences:${Version.dataStore}"
     }
 
     object Mvi {

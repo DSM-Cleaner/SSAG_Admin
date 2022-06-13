@@ -14,7 +14,7 @@ import com.ssag.ssag_admin.ui.navigation.AppNavigationItem
 @Composable
 fun SsagApp() {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = AppNavigationItem.CheckClean.route) {
+    NavHost(navController = navController, startDestination = AppNavigationItem.Login.route) {
         composable(AppNavigationItem.Login.route) {
             Login(navController = navController)
         }
@@ -24,10 +24,14 @@ fun SsagApp() {
         }
 
         composable(
-            AppNavigationItem.CheckClean.route)
-         {
-//            val isManTeacher = it.arguments!!.getBoolean("isManTeacher")
-            CheckClean(navController = navController, isManTeacher = true)
+            AppNavigationItem.CheckClean.route + "/{isManTeacher}",
+            arguments = listOf(navArgument("isManTeacher") {
+                defaultValue = true
+                type = NavType.BoolType
+            })
+        ) {
+            val isManTeacher = it.arguments!!.getBoolean("isManTeacher")
+            CheckClean(navController = navController, isManTeacher = isManTeacher)
         }
     }
 }
