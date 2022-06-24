@@ -11,6 +11,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -19,6 +20,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.ConstraintSet
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.chargemap.compose.numberpicker.NumberPicker
@@ -206,6 +209,7 @@ fun CheckCleanMoveRoomFloatingButtons(
         modifier = Modifier
             .fillMaxWidth()
             .padding(10.dp, 10.dp)
+            .layoutId(checkCleanRoomButtonsLayoutId)
     ) {
         if (checkCleanState.isNotFirstRoom()) {
             CheckCleanMoveRoomFloatingButtons(
@@ -246,13 +250,14 @@ fun CheckCleanContent(
     doOnSelectRoomDialogDismiss: () -> Unit
 ) {
     val scrollState = rememberScrollState()
-    Column(verticalArrangement = Arrangement.Bottom, modifier = Modifier.fillMaxSize()) {
+    ConstraintLayout(deCoupledCheckCleanConstraints, modifier = Modifier.fillMaxSize()) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .verticalScroll(scrollState)
                 .padding(10.dp)
                 .fillMaxSize()
+                .layoutId(checkCleanContentsLayoutId)
         ) {
             Text(
                 text = "통과되지 않은 항목을 체크해 주세요.",
@@ -299,6 +304,8 @@ fun CheckCleanContent(
                     doOnSelectRoomDialogDismiss = doOnSelectRoomDialogDismiss
                 )
             }
+
+            Spacer(modifier = Modifier.height(45.dp))
         }
 
         CheckCleanMoveRoomFloatingButtons(
@@ -308,6 +315,28 @@ fun CheckCleanContent(
         )
     }
 }
+
+private const val checkCleanContentsLayoutId = "checkCleanContents"
+private const val checkCleanRoomButtonsLayoutId = "checkCleanRoomButtons"
+
+private val deCoupledCheckCleanConstraints =
+    ConstraintSet {
+        val checkCleanContents = createRefFor(checkCleanContentsLayoutId)
+        val checkCleanRoomButtons = createRefFor(checkCleanRoomButtonsLayoutId)
+
+        constrain(checkCleanContents) {
+            top.linkTo(parent.top)
+            start.linkTo(parent.start)
+            end.linkTo(parent.end)
+            bottom.linkTo(parent.bottom)
+        }
+        constrain(checkCleanRoomButtons) {
+            bottom.linkTo(parent.bottom)
+            start.linkTo(parent.start)
+            end.linkTo(parent.end)
+        }
+    }
+
 
 @Composable
 fun SelectRoomDialog(
