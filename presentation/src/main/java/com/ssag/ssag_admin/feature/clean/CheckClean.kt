@@ -145,10 +145,10 @@ fun CheckClean(
     checkCleanSideEffect.debounce(300).observeWithLifecycle {
         when (it) {
             is CheckCleanSideEffect.PostFail -> {
-                scaffoldState.snackbarHostState.showSnackbar("청소상태를 등록하지 못하였습니다.")
+                //scaffoldState.snackbarHostState.showSnackbar("청소상태를 등록하지 못하였습니다.")
             }
             is CheckCleanSideEffect.FetchFail -> {
-                scaffoldState.snackbarHostState.showSnackbar("호실정보를 읽어오지 못하였습니다.")
+                //scaffoldState.snackbarHostState.showSnackbar("호실정보를 읽어오지 못하였습니다.")
             }
         }
     }
