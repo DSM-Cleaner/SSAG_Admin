@@ -14,7 +14,6 @@ data class FetchRoomStateResponse(
 ) {
 
     data class StudentResponse(
-        @SerializedName("id") val id: Long,
         @SerializedName("bed") val bed: String,
         @SerializedName("user_id") val gcn: Int,
         @SerializedName("name") val name: String,
@@ -24,7 +23,7 @@ data class FetchRoomStateResponse(
     ) {
         fun toEntity() =
             StudentEntity(
-                id = id,
+                id = gcn.toLong(),
                 bedPosition = bed,
                 gcn = gcn,
                 name = name,
