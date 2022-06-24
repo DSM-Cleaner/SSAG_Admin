@@ -41,6 +41,6 @@ data class FetchRoomStateResponse(
             lightIsNotComplete = light,
             plugIsNotComplete = plug,
             shoesAreNotComplete = shoes,
-            students = studentList.map { it.toEntity() }
+            students = studentList.map { it.toEntity() }.sortedBy { it.bedPosition }
         )
 }

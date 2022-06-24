@@ -20,7 +20,7 @@ class ChangePasswordViewModel @Inject constructor(
     override val container: Container<ChangePasswordState, ChangePasswordSideEffect> =
         container(ChangePasswordState.initial())
 
-    suspend fun changePassword() = intent {
+    fun changePassword() = intent {
         if (state.isDoneInput()) {
             kotlin.runCatching {
                 val newPassword = state.newPassword
