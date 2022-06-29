@@ -4,11 +4,11 @@ import com.ssag.domain.feature.clean.entity.RoomStateEntity
 import com.ssag.domain.feature.clean.parameter.PostCleanStateParameter
 import org.threeten.bp.LocalDate
 
-private val secondFloorRooms = 201..223
-private val thirdFloorRooms = 323 downTo 301
+private val secondFloorRooms = 203..222
+private val thirdFloorRooms = 325 downTo 303
 
-private val fourthFloorRooms = 423 downTo 401
-private val fifthFloorRooms = 501..523
+private val fourthFloorRooms = 422 downTo 401
+private val fifthFloorRooms = 501..518
 
 fun CheckCleanState.reduceSetRoomState(roomState: RoomStateEntity): CheckCleanState =
     this.copy(roomState = roomState)
