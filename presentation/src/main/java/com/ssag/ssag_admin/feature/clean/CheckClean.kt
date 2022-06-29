@@ -8,6 +8,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,6 +38,7 @@ import com.ssag.ssag_admin.ui.theme.Purple700
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.launch
 
 @SuppressLint("FlowOperatorInvokedInComposition")
 @OptIn(InternalCoroutinesApi::class, FlowPreview::class)
@@ -52,6 +54,8 @@ fun CheckClean(
 
     val scaffoldState = rememberScaffoldState()
 
+    val scrollState = rememberScrollState()
+
     LaunchedEffect(Unit) {
         checkCleanViewModel.run {
             checkDayIsPersonalCheckDay()
@@ -65,6 +69,8 @@ fun CheckClean(
             setStartRoom()
         }
     }
+
+    val coroutineScope = rememberCoroutineScope()
 
     Scaffold(
         scaffoldState = scaffoldState,
@@ -84,11 +90,18 @@ fun CheckClean(
     ) {
         CheckCleanContent(
             checkCleanState = checkCleanState,
+            scrollState = scrollState,
             doOnNextRoomClick = {
                 checkCleanViewModel.moveToNextRoom()
+                coroutineScope.launch {
+                    scrollState.scrollTo(0)
+                }
             },
             doOnBeforeRoomClick = {
                 checkCleanViewModel.moveToBeforeRoom()
+                coroutineScope.launch {
+                    scrollState.scrollTo(0)
+                }
             },
             doOnStudentBedIsClean = { studentId ->
                 checkCleanViewModel.setStudentBedIsClean(studentId)
@@ -138,6 +151,10 @@ fun CheckClean(
                     doOnSelectRoom()
                     dismissSelectRoomDialog()
                 }
+
+                coroutineScope.launch {
+                    scrollState.scrollTo(0)
+                }
             }
         )
     }
@@ -145,10 +162,10 @@ fun CheckClean(
     checkCleanSideEffect.debounce(300).observeWithLifecycle {
         when (it) {
             is CheckCleanSideEffect.PostFail -> {
-                //scaffoldState.snackbarHostState.showSnackbar("청소상태를 등록하지 못하였습니다.")
+                scaffoldState.snackbarHostState.showSnackbar("청소상태를 등록하지 못하였습니다.")
             }
             is CheckCleanSideEffect.FetchFail -> {
-                //scaffoldState.snackbarHostState.showSnackbar("호실정보를 읽어오지 못하였습니다.")
+                scaffoldState.snackbarHostState.showSnackbar("호실정보를 읽어오지 못하였습니다.")
             }
         }
     }
@@ -234,6 +251,7 @@ fun CheckCleanMoveRoomFloatingButtons(
 @Composable
 fun CheckCleanContent(
     checkCleanState: CheckCleanState,
+    scrollState: ScrollState,
     rooms: List<Int>,
     doOnNextRoomClick: () -> Unit,
     doOnBeforeRoomClick: () -> Unit,
@@ -249,7 +267,6 @@ fun CheckCleanContent(
     doOnRoomSelect: (Int) -> Unit,
     doOnSelectRoomDialogDismiss: () -> Unit
 ) {
-    val scrollState = rememberScrollState()
     ConstraintLayout(deCoupledCheckCleanConstraints, modifier = Modifier.fillMaxSize()) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -715,6 +732,7 @@ fun CheckCleanContentPreview() {
         doOnPersonalPlaceCompleted = {},
         doOnSelectRoomDialogDismiss = {},
         doOnRoomSelect = {},
-        rooms = emptyList()
+        rooms = emptyList(),
+        scrollState = rememberScrollState()
     )
 }
