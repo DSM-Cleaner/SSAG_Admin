@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName
 import com.ssag.data.toInt
 import com.ssag.domain.feature.clean.entity.StudentEntity
 import com.ssag.domain.feature.clean.parameter.PostCleanStateParameter
+import org.threeten.bp.LocalDate
 
 data class PostRoomStateRequest(
     @SerializedName("light") val light: Boolean,
@@ -13,7 +14,8 @@ data class PostRoomStateRequest(
 ) {
 
     data class StudentRequest(
-        @SerializedName("id") val id: Long,
+        @SerializedName("user_id") val id: Long,
+        @SerializedName("day") val day: String,
         @SerializedName("bedding") val bedding: Int,
         @SerializedName("clothes") val clothes: Int,
         @SerializedName("personal_place") val personalPlace: Boolean?
@@ -34,6 +36,7 @@ fun List<StudentEntity>.toRequest() =
 fun StudentEntity.toRequest() =
     PostRoomStateRequest.StudentRequest(
         id = id,
+        day = LocalDate.now().toString(),
         bedding = cleanState.beddingIsNotClean.toInt(),
         clothes = cleanState.clotheIsNotClean.toInt(),
         personalPlace = cleanState.personalPlaceIsNotClean
