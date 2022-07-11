@@ -7,6 +7,7 @@ import com.ssag.domain.feature.clean.parameter.PostCleanStateParameter
 import org.threeten.bp.LocalDate
 
 data class PostRoomStateRequest(
+    @SerializedName("day") val day: String,
     @SerializedName("light") val light: Boolean,
     @SerializedName("plug") val plug: Boolean,
     @SerializedName("shoes") val shoes: Boolean,
@@ -27,7 +28,8 @@ fun PostCleanStateParameter.toRequest() =
         light = lightIsNotComplete,
         plug = plugIsNotComplete,
         shoes = shoesAreNotComplete,
-        studentList = studentList.toRequest()
+        studentList = studentList.toRequest(),
+        day = LocalDate.now().toString()
     )
 
 fun List<StudentEntity>.toRequest() =

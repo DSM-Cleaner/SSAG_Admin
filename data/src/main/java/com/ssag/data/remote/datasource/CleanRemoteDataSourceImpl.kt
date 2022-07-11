@@ -18,8 +18,8 @@ class CleanRemoteDataSourceImpl @Inject constructor(
     }
 
     override suspend fun fetchRoomState(roomId: Int): RoomStateEntity {
-        val dayOfWeek = LocalDate.now().dayOfWeek.name
-        return cleanApi.fetchRoomState(roomId, dayOfWeek).toEntity()
+        val nowDate = LocalDate.now().toString()
+        return cleanApi.fetchRoomState(roomId, nowDate).toEntity()
     }
 
 }
