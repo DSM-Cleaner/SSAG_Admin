@@ -78,7 +78,10 @@ fun CheckClean(
             CheckCleanTopBarContent(
                 checkCleanState = checkCleanState,
                 doOnSelectRoomClick = { checkCleanViewModel.showSelectRoomDialog() },
-                doOnCompleteClick = { navController.popBackStack() }
+                doOnCompleteClick = {
+                    checkCleanViewModel.doneCheckClean()
+                    navController.popBackStack()
+                }
             )
         },
         snackbarHost = {

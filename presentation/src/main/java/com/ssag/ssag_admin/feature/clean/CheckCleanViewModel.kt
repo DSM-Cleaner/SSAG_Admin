@@ -43,6 +43,10 @@ class CheckCleanViewModel @Inject constructor(
         }
     }
 
+    fun doneCheckClean() = intent {
+        postCleanState(state)
+    }
+
     fun setTeacherGender(isMan: Boolean) = intent {
         reduce { state.reduceIsManTeacher(isMan) }
     }
