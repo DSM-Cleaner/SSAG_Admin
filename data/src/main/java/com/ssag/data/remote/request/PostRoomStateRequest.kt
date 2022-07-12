@@ -29,7 +29,7 @@ fun PostCleanStateParameter.toRequest() =
         plug = plugIsNotComplete,
         shoes = shoesAreNotComplete,
         studentList = studentList.toRequest(),
-        day = LocalDate.now().toString()
+        day = LocalDate.now().dayOfWeek.name
     )
 
 fun List<StudentEntity>.toRequest() =
@@ -38,7 +38,7 @@ fun List<StudentEntity>.toRequest() =
 fun StudentEntity.toRequest() =
     PostRoomStateRequest.StudentRequest(
         id = id,
-        day = LocalDate.now().toString(),
+        day = LocalDate.now().dayOfWeek.name,
         bedding = cleanState.beddingIsNotClean.toInt(),
         clothes = cleanState.clotheIsNotClean.toInt(),
         personalPlace = cleanState.personalPlaceIsNotClean
